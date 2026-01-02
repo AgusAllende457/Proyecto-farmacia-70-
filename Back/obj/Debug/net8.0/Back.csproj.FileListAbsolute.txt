@@ -152,3 +152,15 @@ D:\JEREMIAS\programacion\Repo\Proyecto-farmacia\Back\obj\Debug\net8.0\refint\Bac
 D:\JEREMIAS\programacion\Repo\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.pdb
 D:\JEREMIAS\programacion\Repo\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.genruntimeconfig.cache
 D:\JEREMIAS\programacion\Repo\Proyecto-farmacia\Back\obj\Debug\net8.0\ref\Back.dll
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.csproj.AssemblyReference.cache
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.GeneratedMSBuildEditorConfig.editorconfig
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.AssemblyInfoInputs.cache
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.AssemblyInfo.cs
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.csproj.CoreCompileInputs.cache
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.MvcApplicationPartsAssemblyInfo.cs
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.MvcApplicationPartsAssemblyInfo.cache
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.sourcelink.json
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.dll
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\refint\Back.dll
+C:\Tesis\Proyecto-farmacia\Back\obj\Debug\net8.0\Back.pdb

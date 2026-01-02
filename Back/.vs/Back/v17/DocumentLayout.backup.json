@@ -1,7 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Tesis\\Proyecto-farmacia\\Back\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\tesis\\proyecto-farmacia\\back\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +14,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Tesis\\Proyecto-farmacia\\Back\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Tesis\\Proyecto-farmacia\\Back\\Data\\AppDbContext.cs*",
+              "RelativeToolTip": "Data\\AppDbContext.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T20:51:23.735Z",
+              "EditorCaption": ""
             }
           ]
         }
