@@ -4,6 +4,7 @@ using Back.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260105180639_AgregarDireccionYLocalidadAPedidos")]
+    partial class AgregarDireccionYLocalidadAPedidos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,10 +249,6 @@ namespace Back.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IDPedido"));
 
-                    b.Property<string>("DireccionEntrega")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("EstadoActual")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -277,9 +276,6 @@ namespace Back.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("IDEstadoDePedido")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IDLocalidad")
                         .HasColumnType("int");
 
                     b.Property<int>("IDSucursal")

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Back.Data;
+using AutoMapper;
 namespace Back
 {
     public class Program
@@ -15,6 +16,8 @@ namespace Back
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            // Esta es la forma limpia para la versión 13
+            builder.Services.AddAutoMapper(typeof(Back.Mappings.MappingProfile));
 
             var app = builder.Build();
 
