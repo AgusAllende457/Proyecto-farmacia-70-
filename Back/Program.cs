@@ -1,6 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using Back.Data;
 using AutoMapper;
+using Back.Data;
+using Back.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
+
 namespace Back
 {
     public class Program
@@ -9,19 +13,30 @@ namespace Back
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // --- CONFIGURACIÓN DE SERVICIOS ---
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            // Esta es la forma limpia para la versión 13
+
+            // Configuración de Base de Datos - Núcleo del sistema (RF1, RF2, RF17)
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // AutoMapper: Transformación de Entidades a DTOs (Seguridad y Trazabilidad)
             builder.Services.AddAutoMapper(typeof(Back.Mappings.MappingProfile));
+
+            // FluentValidation: Validación automática de reglas de negocio
+            builder.Services.AddFluentValidationAutoValidation();
+
+            // Con esta sola línea basta para registrar LoginValidator, UserValidator y CreateOrderValidator
+            // siempre que estén en el mismo proyecto/carpeta.
+            builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // --- PIPELINE DE SOLICITUDES HTTP ---
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -30,8 +45,8 @@ namespace Back
 
             app.UseHttpsRedirection();
 
+            // Ref: RF8 - El sistema controlará el acceso mediante perfiles (Authorization)
             app.UseAuthorization();
-
 
             app.MapControllers();
 
