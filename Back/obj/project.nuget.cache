@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "tltHe7FafPI=",
+  "dgSpecHash": "y0isiboBlu8=",
   "success": true,
   "projectFilePath": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Back.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\JEREMIAS\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
-    "C:\\Users\\JEREMIAS\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\JEREMIAS\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\JEREMIAS\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\JEREMIAS\\.nuget\\packages\\fluentvalidation\\11.5.1\\fluentvalidation.11.5.1.nupkg.sha512",
@@ -101,18 +100,5 @@
     "C:\\Users\\JEREMIAS\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\JEREMIAS\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1608",
-      "level": "Warning",
-      "message": "Se detectó una versión del paquete fuera de la restricción de dependencia: AutoMapper.Extensions.Microsoft.DependencyInjection 12.0.1 requiere AutoMapper (= 12.0.1), pero la versión AutoMapper 13.0.1 ya se resolvió.",
-      "projectPath": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Back.csproj",
-      "warningLevel": 1,
-      "filePath": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Back.csproj",
-      "libraryId": "AutoMapper",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    }
-  ]
+  "logs": []
 }

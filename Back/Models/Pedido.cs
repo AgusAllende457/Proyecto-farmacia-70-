@@ -9,7 +9,8 @@ namespace Back.Models
         public decimal Total { get; set; }
         public string FormaDePago { get; set; } = string.Empty;
         public string EstadoActual { get; set; } = string.Empty;
-
+        public string DireccionEntrega { get; set; } = string.Empty;
+        public int IDLocalidad { get; set; } // Así cumplís el RF 5.6
         // Los campos que faltaban:
         public DateTime? FechaEntregaReal { get; set; }
         public DateTime FechaEntregaEstimada { get; set; }

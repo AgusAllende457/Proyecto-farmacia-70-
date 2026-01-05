@@ -3,12 +3,36 @@
   "WorkspaceRootPath": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\back.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:back.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\dtos\\createorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:dtos\\createorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\dtos\\orderdetaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:dtos\\orderdetaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\migrations\\20260105180639_agregardireccionylocalidadapedidos.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:migrations\\20260105180639_agregardireccionylocalidadapedidos.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\models\\pedido.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:models\\pedido.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,8 +42,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 10,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
@@ -30,7 +58,85 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
+              "Title": "Back",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Back.csproj",
+              "RelativeDocumentMoniker": "Back.csproj",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Back.csproj",
+              "RelativeToolTip": "Back.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-05T19:04:38.539Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CreateOrderDTO.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\DTOs\\CreateOrderDTO.cs",
+              "RelativeDocumentMoniker": "DTOs\\CreateOrderDTO.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\DTOs\\CreateOrderDTO.cs",
+              "RelativeToolTip": "DTOs\\CreateOrderDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-05T18:49:48.389Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MappingProfile.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Mappings\\MappingProfile.cs",
+              "RelativeDocumentMoniker": "Mappings\\MappingProfile.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Mappings\\MappingProfile.cs",
+              "RelativeToolTip": "Mappings\\MappingProfile.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-05T18:27:14.169Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "OrderDetailDTO.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\DTOs\\OrderDetailDTO.cs",
+              "RelativeDocumentMoniker": "DTOs\\OrderDetailDTO.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\DTOs\\OrderDetailDTO.cs",
+              "RelativeToolTip": "DTOs\\OrderDetailDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-05T18:18:46.135Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "20260105180639_AgregarDireccionYLocalidadAPedidos.Designer.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Migrations\\20260105180639_AgregarDireccionYLocalidadAPedidos.Designer.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260105180639_AgregarDireccionYLocalidadAPedidos.Designer.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Migrations\\20260105180639_AgregarDireccionYLocalidadAPedidos.Designer.cs",
+              "RelativeToolTip": "Migrations\\20260105180639_AgregarDireccionYLocalidadAPedidos.Designer.cs",
+              "ViewState": "AgIAABYCAAAAAAAAAAAAADgCAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-05T18:10:40.428Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Pedido.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Models\\Pedido.cs",
+              "RelativeDocumentMoniker": "Models\\Pedido.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Models\\Pedido.cs",
+              "RelativeToolTip": "Models\\Pedido.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-05T17:50:02.588Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
@@ -38,18 +144,17 @@
               "RelativeToolTip": "Data\\AppDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-02T21:42:29.246Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-02T21:42:29.246Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAiwB0AAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAAEAAAAAAAAAAADwvxkAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-02T21:27:35.916Z",
               "EditorCaption": ""
