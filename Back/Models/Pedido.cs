@@ -29,5 +29,8 @@ namespace Back.Models
         public Usuario Usuario { get; set; } = null!;
         public Sucursal Sucursal { get; set; } = null!;
         public ICollection<DetalleDePedido> Detalles { get; set; } = new List<DetalleDePedido>();
+        // --- AGREGÁ ESTA LÍNEA AQUÍ PARA SOLUCIONAR EL ERROR ---
+        public ICollection<HistorialDeEstados> HistorialDeEstados { get; set; } = new List<HistorialDeEstados>();
     }
 }
+ 
