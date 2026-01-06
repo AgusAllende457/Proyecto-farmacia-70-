@@ -42,6 +42,9 @@ namespace Back
             builder.Services.AddScoped<ClientRepository>();
             builder.Services.AddScoped<ProductRepository>();
             builder.Services.AddScoped<LocalityRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
 
             var app = builder.Build();
 
