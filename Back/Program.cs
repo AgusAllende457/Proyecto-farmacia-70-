@@ -1,5 +1,7 @@
 using AutoMapper;
 using Back.Data;
+using Back.Repositories;
+using Back.Repositories.Interfaces;
 using Back.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -32,6 +34,14 @@ namespace Back
             // Con esta sola línea basta para registrar LoginValidator, UserValidator y CreateOrderValidator
             // siempre que estén en el mismo proyecto/carpeta.
             builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
+            //conexion de generic repository
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            //registro de repositorios específicos
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            // Registro de implementaciones específicas para inyección directa si fuera necesario
+            builder.Services.AddScoped<ClientRepository>();
+            builder.Services.AddScoped<ProductRepository>();
+            builder.Services.AddScoped<LocalityRepository>();
 
             var app = builder.Build();
 
