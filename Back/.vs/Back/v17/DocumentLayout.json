@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\trackingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\trackingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -17,10 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\interfaces\\iorderstatusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\interfaces\\iorderstatusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -58,7 +58,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,20 +66,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "TrackingRepository.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\TrackingRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\TrackingRepository.cs",
               "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\TrackingRepository.cs",
               "RelativeToolTip": "Repositories\\TrackingRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-06T20:24:19.017Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "OrderStatusRepository.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\OrderStatusRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\OrderStatusRepository.cs",
@@ -87,12 +87,11 @@
               "RelativeToolTip": "Repositories\\OrderStatusRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-06T20:23:37.249Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-06T20:23:37.249Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "ITrackingRepository.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\ITrackingRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\ITrackingRepository.cs",
@@ -100,12 +99,11 @@
               "RelativeToolTip": "Repositories\\Interfaces\\ITrackingRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-06T20:22:33.969Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-06T20:22:33.969Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "IOrderStatusRepository.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IOrderStatusRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\IOrderStatusRepository.cs",
@@ -113,18 +111,17 @@
               "RelativeToolTip": "Repositories\\Interfaces\\IOrderStatusRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-06T20:21:12.429Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-06T20:21:12.429Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwCcAAAA4AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-02T21:27:35.916Z",
               "EditorCaption": ""

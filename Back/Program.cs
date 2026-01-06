@@ -31,21 +31,25 @@ namespace Back
             // FluentValidation: Validación automática de reglas de negocio
             builder.Services.AddFluentValidationAutoValidation();
 
-            // Con esta sola línea basta para registrar LoginValidator, UserValidator y CreateOrderValidator
-            // siempre que estén en el mismo proyecto/carpeta.
+            // Registro de Validadores
             builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
-            //conexion de generic repository
+
+            // Conexión de Generic Repository
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            //registro de repositorios específicos
+
+            // Registro de repositorios específicos
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
-            // Registro de implementaciones específicas para inyección directa si fuera necesario
+            // --- NUEVOS REPOSITORIOS (Seguimiento y Estados - Florencia) ---
+            builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
+            builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
+
+            // Registro de implementaciones específicas para inyección directa
             builder.Services.AddScoped<ClientRepository>();
             builder.Services.AddScoped<ProductRepository>();
             builder.Services.AddScoped<LocalityRepository>();
-           
 
             var app = builder.Build();
 
