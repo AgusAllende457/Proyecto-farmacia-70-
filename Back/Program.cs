@@ -38,13 +38,14 @@ namespace Back
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             //registro de repositorios específicos
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
             // Registro de implementaciones específicas para inyección directa si fuera necesario
             builder.Services.AddScoped<ClientRepository>();
             builder.Services.AddScoped<ProductRepository>();
             builder.Services.AddScoped<LocalityRepository>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-
+           
 
             var app = builder.Build();
 
