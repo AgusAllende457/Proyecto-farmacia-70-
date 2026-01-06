@@ -444,7 +444,7 @@ namespace Back.Migrations
                         .IsRequired();
 
                     b.HasOne("Back.Models.Pedido", "Pedido")
-                        .WithMany()
+                        .WithMany("HistorialDeEstados")
                         .HasForeignKey("PedidoIDPedido")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -547,6 +547,8 @@ namespace Back.Migrations
             modelBuilder.Entity("Back.Models.Pedido", b =>
                 {
                     b.Navigation("Detalles");
+
+                    b.Navigation("HistorialDeEstados");
                 });
 
             modelBuilder.Entity("Back.Models.Producto", b =>
