@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\" />
+    <Folder Include="Repositories\Interfaces\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
