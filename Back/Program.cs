@@ -6,7 +6,8 @@ using Back.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-
+using Back.Services; 
+using Back.Services.Interfaces; 
 namespace Back
 {
     public class Program
@@ -50,6 +51,10 @@ namespace Back
             builder.Services.AddScoped<ClientRepository>();
             builder.Services.AddScoped<ProductRepository>();
             builder.Services.AddScoped<LocalityRepository>();
+            // --- REGISTRO DE LA CAPA DE SERVICIOS ---
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IClientService, ClientService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             var app = builder.Build();
 
