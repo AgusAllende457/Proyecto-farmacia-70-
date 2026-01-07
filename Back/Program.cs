@@ -42,6 +42,8 @@ namespace Back
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+            // Repositorios de Florencia (RF2, RF6)
             builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
             builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
 
@@ -49,17 +51,18 @@ namespace Back
             builder.Services.AddScoped<ProductRepository>();
             builder.Services.AddScoped<LocalityRepository>();
 
-            // --- CAPA DE SERVICIOS (Agregados Auth y User) ---
+            // --- CAPA DE SERVICIOS ---
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IProductService, ProductService>();
-
-            // Ref: RF7 y RF8 - Servicios para Autenticación y Gestión de Usuarios
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
+            // Servicios de Florencia (Pedidos y Flujo Operativo)
+            builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
+            builder.Services.AddScoped<ITrackingService, TrackingService>();
+
             // --- CONFIGURACIÓN DE SEGURIDAD JWT ---
-            // Ref: Mandato Ampliado - Seguridad y accesos restringidos
             var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value ?? "Clave_Super_Secreta_Farmacia_2024");
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
