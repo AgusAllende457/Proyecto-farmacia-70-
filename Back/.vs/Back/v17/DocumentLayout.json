@@ -1,53 +1,53 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\",
+  "WorkspaceRootPath": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\trackingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\repositories\\trackingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\trackingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\orderstatusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\repositories\\orderstatusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\orderstatusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\interfaces\\itrackingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\repositories\\interfaces\\itrackingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\interfaces\\itrackingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\interfaces\\iorderstatusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\repositories\\interfaces\\iorderstatusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\interfaces\\iorderstatusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\clientrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\repositories\\clientrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\clientrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\repositories\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\repositories\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:repositories\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\models\\pedido.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\models\\pedido.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:models\\pedido.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\models\\historialdeestados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\models\\historialdeestados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:models\\historialdeestados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|c:\\users\\usuario\\desktop\\3\u00B0 a\u00F1o\\programaci\u00F3n aplicada\\proyecto-farmacia\\back\\validator\\ordertrackingvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|d:\\jeremias\\programacion\\repo\\proyecto-farmacia\\back\\validator\\ordertrackingvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F69175F0-41FA-4B34-B66D-BCFA034A445B}|Back.csproj|solutionrelative:validator\\ordertrackingvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -58,32 +58,39 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "TrackingRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\TrackingRepository.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\TrackingRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\TrackingRepository.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\TrackingRepository.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\TrackingRepository.cs",
               "RelativeToolTip": "Repositories\\TrackingRepository.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-06T20:24:19.017Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-06T20:24:19.017Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "OrderStatusRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\OrderStatusRepository.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\OrderStatusRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\OrderStatusRepository.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\OrderStatusRepository.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\OrderStatusRepository.cs",
               "RelativeToolTip": "Repositories\\OrderStatusRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -93,9 +100,9 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "ITrackingRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\ITrackingRepository.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\ITrackingRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\ITrackingRepository.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\ITrackingRepository.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\ITrackingRepository.cs",
               "RelativeToolTip": "Repositories\\Interfaces\\ITrackingRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -105,9 +112,9 @@
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "IOrderStatusRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IOrderStatusRepository.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IOrderStatusRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\IOrderStatusRepository.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IOrderStatusRepository.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IOrderStatusRepository.cs",
               "RelativeToolTip": "Repositories\\Interfaces\\IOrderStatusRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -117,11 +124,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Program.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Program.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEkAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAgwEkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-02T21:27:35.916Z",
               "EditorCaption": ""
@@ -130,9 +137,9 @@
               "$type": "Document",
               "DocumentIndex": 7,
               "Title": "ProductRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\ProductRepository.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\ProductRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\ProductRepository.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\ProductRepository.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\ProductRepository.cs",
               "RelativeToolTip": "Repositories\\ProductRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -142,9 +149,9 @@
               "$type": "Document",
               "DocumentIndex": 6,
               "Title": "ClientRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\ClientRepository.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\ClientRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\ClientRepository.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\ClientRepository.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\ClientRepository.cs",
               "RelativeToolTip": "Repositories\\ClientRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -154,9 +161,9 @@
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "GenericRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\GenericRepository.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\GenericRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\GenericRepository.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\GenericRepository.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\GenericRepository.cs",
               "RelativeToolTip": "Repositories\\GenericRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -166,9 +173,9 @@
               "$type": "Document",
               "DocumentIndex": 8,
               "Title": "IGenericRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IGenericRepository.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IGenericRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\Interfaces\\IGenericRepository.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IGenericRepository.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Repositories\\Interfaces\\IGenericRepository.cs",
               "RelativeToolTip": "Repositories\\Interfaces\\IGenericRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -178,9 +185,9 @@
               "$type": "Document",
               "DocumentIndex": 10,
               "Title": "HistorialDeEstados.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Models\\HistorialDeEstados.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Models\\HistorialDeEstados.cs",
               "RelativeDocumentMoniker": "Models\\HistorialDeEstados.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Models\\HistorialDeEstados.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Models\\HistorialDeEstados.cs",
               "RelativeToolTip": "Models\\HistorialDeEstados.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -190,9 +197,9 @@
               "$type": "Document",
               "DocumentIndex": 11,
               "Title": "OrderTrackingValidator.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Validator\\OrderTrackingValidator.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Validator\\OrderTrackingValidator.cs",
               "RelativeDocumentMoniker": "Validator\\OrderTrackingValidator.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Validator\\OrderTrackingValidator.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Validator\\OrderTrackingValidator.cs",
               "RelativeToolTip": "Validator\\OrderTrackingValidator.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -202,9 +209,9 @@
               "$type": "Document",
               "DocumentIndex": 9,
               "Title": "Pedido.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Models\\Pedido.cs",
+              "DocumentMoniker": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Models\\Pedido.cs",
               "RelativeDocumentMoniker": "Models\\Pedido.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Desktop\\3\u00B0 A\u00D1O\\Programaci\u00F3n aplicada\\Proyecto-farmacia\\Back\\Models\\Pedido.cs",
+              "ToolTip": "D:\\JEREMIAS\\programacion\\Repo\\Proyecto-farmacia\\Back\\Models\\Pedido.cs",
               "RelativeToolTip": "Models\\Pedido.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
