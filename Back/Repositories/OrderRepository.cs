@@ -1,5 +1,4 @@
 ﻿using Back.Data;
-using Back.Interfaces;
 using Back.Models;
 using Back.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
