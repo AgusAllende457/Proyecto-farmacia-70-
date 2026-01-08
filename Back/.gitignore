@@ -1,0 +1,50 @@
+--- CARPETAS DE COMPILACIÓN Y BINARIOS ---
+
+Ignora las carpetas donde se compila el código (se regeneran solas)
+
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+--- ARCHIVOS DE CONFIGURACIÓN DE VISUAL STUDIO ---
+
+Ignora configuraciones personales y temporales del IDE
+
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.ide
+*.metadata
+*.bin
+
+--- NUGET Y DEPENDENCIAS ---
+
+Ignora archivos de restauración de paquetes
+
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+--- TRADUCCIONES AUTOMÁTICAS (CARPETAS BASURA) ---
+
+Ignora las carpetas que Git tradujo por error en pasos anteriores
+
+Atrás/
+Volver/
+Espalda/
+Parte trasera/
+Atras/
+Back/obj/
+Back/bin/
+
+--- OTROS ---
+
+Archivos temporales de sistema
+
+.DS_Store
+Thumbs.db
