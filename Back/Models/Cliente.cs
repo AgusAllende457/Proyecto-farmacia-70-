@@ -10,7 +10,7 @@ namespace Back.Models
         public string DNI { get; set; } = string.Empty;
         public string Telefono { get; set; } = string.Empty;
         public string Mail { get; set; } = string.Empty;
-
+        public string Direccion { get; set; } = string.Empty;   
         // FK y Propiedad de Navegación a Localidad
         public int IDLocalidad { get; set; }
         public Localidad Localidad { get; set; } = null!;
