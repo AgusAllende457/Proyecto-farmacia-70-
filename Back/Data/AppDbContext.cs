@@ -15,6 +15,7 @@ namespace Back.Data
         public DbSet<Sucursal> Sucursales { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Localidad> Localidades { get; set; }
+        public DbSet<Barrio> Barrios { get; set; } // <-- NUEVA TABLA
         public DbSet<EstadoDePedido> EstadosDePedidos { get; set; }
         public DbSet<IntentoDeEntrega> IntentosDeEntregas { get; set; }
         public DbSet<HistorialDeEstados> HistorialesDeEstados { get; set; }
@@ -30,29 +31,35 @@ namespace Back.Data
             modelBuilder.Entity<Sucursal>().HasKey(s => s.IDSucursal);
             modelBuilder.Entity<Cliente>().HasKey(c => c.IDCliente);
             modelBuilder.Entity<Localidad>().HasKey(l => l.IDLocalidad);
+            modelBuilder.Entity<Barrio>().HasKey(b => b.IDBarrio); // PK para Barrio
             modelBuilder.Entity<EstadoDePedido>().HasKey(e => e.IDEstadoDePedido);
             modelBuilder.Entity<IntentoDeEntrega>().HasKey(i => i.IDIntentoDeEntrega);
             modelBuilder.Entity<HistorialDeEstados>().HasKey(h => h.IDHistorialEstados);
 
-            // --- NUEVA CONFIGURACIÓN DE PRECISIÓN DECIMAL ---
+            // --- CONFIGURACIÓN DE PRECISIÓN DECIMAL ---
 
-            // Configuración para DetalleDePedido
             modelBuilder.Entity<DetalleDePedido>()
                 .Property(d => d.PrecioUnitario)
                 .HasPrecision(18, 2);
 
-            // Configuración para Pedido
             modelBuilder.Entity<Pedido>()
                 .Property(p => p.Total)
                 .HasPrecision(18, 2);
 
-            // Configuración para Producto
             modelBuilder.Entity<Producto>()
                 .Property(p => p.PrecioProducto)
                 .HasPrecision(18, 2);
 
-            // --- CONFIGURACIÓN DE RELACIONES (REGLA DE ORO) ---
+            // --- CONFIGURACIÓN DE RELACIONES ---
 
+            // Relación Localidad -> Barrios (Una localidad tiene muchos barrios)
+            modelBuilder.Entity<Barrio>()
+                .HasOne(b => b.Localidad)
+                .WithMany(l => l.Barrios)
+                .HasForeignKey(b => b.IDLocalidad)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Relaciones de Pedido (Existentes)
             modelBuilder.Entity<Pedido>()
                 .HasOne(p => p.Usuario)
                 .WithMany(u => u.Pedidos)

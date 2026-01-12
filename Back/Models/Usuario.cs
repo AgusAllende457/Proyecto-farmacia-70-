@@ -1,4 +1,6 @@
-﻿namespace Back.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Back.Models
 {
     public class Usuario
     {
@@ -11,9 +13,11 @@
         public string Mail { get; set; } = string.Empty;
 
         // Relación con Sucursal (CF en  diagrama)
+        
         public int IDSucursal { get; set; }
-        public Sucursal Sucursal { get; set; } = null!;
 
+        [ForeignKey("IDSucursal")] // Esto vincula la propiedad IDSucursal con el objeto Sucursal
+        public Sucursal Sucursal { get; set; } = null!;
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
         public ICollection<IntentoDeEntrega> IntentosDeEntrega { get; set; } = new List<IntentoDeEntrega>();
     }

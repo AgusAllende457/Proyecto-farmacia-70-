@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+
 namespace Back
 {
     public class Program
@@ -47,9 +48,10 @@ namespace Back
             builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
             builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
 
-            builder.Services.AddScoped<ClientRepository>();
-            builder.Services.AddScoped<ProductRepository>();
-            builder.Services.AddScoped<LocalityRepository>();
+            // Repositorios Base
+            builder.Services.AddScoped<IClientRepository, ClientRepository>(); // Asegurado con interfaz
+            builder.Services.AddScoped<IProductRepository, ProductRepository>(); // Asegurado con interfaz
+            builder.Services.AddScoped<ILocalityRepository, LocalityRepository>();
 
             // --- CAPA DE SERVICIOS ---
             builder.Services.AddScoped<IOrderService, OrderService>();
@@ -78,6 +80,28 @@ namespace Back
 
             var app = builder.Build();
 
+            // --- INICIALIZACIÓN DE DATOS (SEEDING) ---
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<AppDbContext>();
+
+                    // ESTO BORRARÁ TODA LA BASE DE DATOS Y LA CREARÁ DE CERO
+                    // Úsalo solo en desarrollo para limpiar las llaves foráneas rebeldes
+                    context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
+
+                    DbInitializer.Initialize(context);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Ocurrió un error al sembrar la base de datos.");
+                }
+            }
+
             // --- PIPELINE DE SOLICITUDES HTTP ---
 
             if (app.Environment.IsDevelopment())
@@ -85,6 +109,12 @@ namespace Back
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            // Habilitar CORS si es necesario para el Frontend
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 
