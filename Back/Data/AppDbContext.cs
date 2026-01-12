@@ -34,12 +34,29 @@ namespace Back.Data
             modelBuilder.Entity<IntentoDeEntrega>().HasKey(i => i.IDIntentoDeEntrega);
             modelBuilder.Entity<HistorialDeEstados>().HasKey(h => h.IDHistorialEstados);
 
-            // REGLA DE ORO: En Pedidos, desactivamos el borrado en cascada para evitar el error 1785
+            // --- NUEVA CONFIGURACIÓN DE PRECISIÓN DECIMAL ---
+
+            // Configuración para DetalleDePedido
+            modelBuilder.Entity<DetalleDePedido>()
+                .Property(d => d.PrecioUnitario)
+                .HasPrecision(18, 2);
+
+            // Configuración para Pedido
+            modelBuilder.Entity<Pedido>()
+                .Property(p => p.Total)
+                .HasPrecision(18, 2);
+
+            // Configuración para Producto
+            modelBuilder.Entity<Producto>()
+                .Property(p => p.PrecioProducto)
+                .HasPrecision(18, 2);
+
+            // --- CONFIGURACIÓN DE RELACIONES (REGLA DE ORO) ---
 
             modelBuilder.Entity<Pedido>()
                 .HasOne(p => p.Usuario)
                 .WithMany(u => u.Pedidos)
-                .HasForeignKey(p => p.IDUsuario) // Usamos tu variable
+                .HasForeignKey(p => p.IDUsuario)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Pedido>()
