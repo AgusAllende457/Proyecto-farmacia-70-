@@ -11,7 +11,7 @@ namespace Back.Models
         public string EstadoActual { get; set; } = string.Empty;
         public string DireccionEntrega { get; set; } = string.Empty;
         public int IDLocalidad { get; set; } // Así cumplís el RF 5.6
-        // Los campos que faltaban:
+        
         public DateTime? FechaEntregaReal { get; set; }
         public DateTime FechaEntregaEstimada { get; set; }
         public TimeSpan? HoraEntregaReal { get; set; }
@@ -29,7 +29,7 @@ namespace Back.Models
         public Usuario Usuario { get; set; } = null!;
         public Sucursal Sucursal { get; set; } = null!;
         public ICollection<DetalleDePedido> Detalles { get; set; } = new List<DetalleDePedido>();
-        // --- AGREGÁ ESTA LÍNEA AQUÍ PARA SOLUCIONAR EL ERROR ---
+        
         public ICollection<HistorialDeEstados> HistorialDeEstados { get; set; } = new List<HistorialDeEstados>();
     }
 }
