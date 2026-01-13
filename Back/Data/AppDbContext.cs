@@ -1,6 +1,7 @@
 ﻿using Back.Models;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Back.Data
 {
     public class AppDbContext : DbContext

@@ -43,6 +43,7 @@ namespace Back
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+            builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 
             // Repositorios de Florencia (RF2, RF6)
             builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
@@ -60,6 +61,7 @@ namespace Back
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ILocalidadService, LocalidadService>();
+            builder.Services.AddScoped<IPedidoService, PedidoService>();
 
             // Servicios de Florencia (Pedidos y Flujo Operativo)
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
