@@ -3,11 +3,11 @@ using Back.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace Back.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // [Authorize] // Podés descomentar esto si querés que solo usuarios logueados lo usen
     public class OrdersController : ControllerBase
     {
         private readonly IOrderStatusService _statusService;
@@ -19,7 +19,45 @@ namespace Back.Controllers
             _trackingService = trackingService;
         }
 
-        // 1. PUT: /api/orders/{id}/estado (RF2 - Cambiar Estado)
+        // --- SECCIÓN ADMINISTRADOR: ASIGNACIÓN DE RESPONSABLES ---
+
+        /// <summary>
+        /// El Administrador asigna un Operario (Ingresado -> Preparado)
+        /// </summary>
+        [Authorize(Roles = "Administrador")]
+        [HttpPatch("asignar-operario")]
+        public async Task<IActionResult> AsignarOperario([FromBody] AssignOperatorDTO dto)
+        {
+            var resultado = await _statusService.AsignarOperarioAsync(dto);
+            if (!resultado)
+            {
+                return BadRequest(new { message = "No se pudo asignar el operario. Verifique que el pedido esté 'Ingresado'." });
+            }
+            return Ok(new { message = "Operario asignado y pedido en estado 'Preparado'." });
+        }
+
+        /// <summary>
+        /// El Administrador asigna un Cadete (Preparado -> Despachado)
+        /// </summary>
+        [Authorize(Roles = "Administrador")]
+        [HttpPatch("asignar-cadete")]
+        public async Task<IActionResult> AsignarCadete([FromBody] AssignDeliveryDTO dto)
+        {
+            var resultado = await _statusService.AsignarCadeteAsync(dto);
+            if (!resultado)
+            {
+                return BadRequest(new { message = "No se pudo asignar el cadete. Verifique que el pedido esté 'Preparado'." });
+            }
+            return Ok(new { message = "Cadete asignado y pedido en estado 'Despachado'." });
+        }
+
+
+        // --- SECCIÓN OPERATIVA: CAMBIOS DE ESTADO (CADETE / GENERAL) ---
+
+        /// <summary>
+        /// RF2 - Cambiar Estado (Principalmente para Entregado/No Entregado por el Cadete)
+        /// </summary>
+        [Authorize(Roles = "Cadete,Administrador")]
         [HttpPut("{id}/estado")]
         public async Task<IActionResult> CambiarEstado(int id, [FromBody] ChangeOrderStatusDTO changeStatusDto)
         {
@@ -32,14 +70,18 @@ namespace Back.Controllers
 
             if (!resultado)
             {
-                return NotFound($"No se encontró el pedido con ID {id} o no se pudo actualizar.");
+                return BadRequest(new { message = $"No se pudo actualizar el estado. Verifique el flujo lógico del pedido." });
             }
 
             return Ok(new { message = "Estado del pedido actualizado correctamente." });
         }
 
-        // 2. GET: /api/orders/{id}/seguimiento (RF6 - Tablero/Seguimiento)
-        // Nota: Lo llamamos seguimiento porque es el término técnico para el historial completo solicitado
+
+        // --- SECCIÓN CONSULTAS: TRAZABILIDAD ---
+
+        /// <summary>
+        /// RF6 - Tablero de Seguimiento (Historial completo de estados)
+        /// </summary>
         [HttpGet("{id}/seguimiento")]
         public async Task<ActionResult<OrderTrackingDTO>> GetSeguimiento(int id)
         {
