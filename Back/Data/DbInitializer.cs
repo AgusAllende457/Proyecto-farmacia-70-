@@ -11,17 +11,24 @@ namespace Back.Data
     {
         public static void Initialize(AppDbContext context)
         {
-            // 1. Asegurar esquema (No borra si ya existe tras comentar EnsureDeleted en Program)
+            // 1. Asegurar esquema
             context.Database.EnsureCreated();
 
             // --- TABLA: ESTADOS DE PEDIDOS ---
+            // Actualizado con el ciclo de vida completo solicitado
             if (!context.EstadosDePedidos.Any())
             {
                 context.EstadosDePedidos.AddRange(
-                    new EstadoDePedido { NombreEstado = "Pendiente", motivo_cancelacion = "N/A" },
-                    new EstadoDePedido { NombreEstado = "En Preparación", motivo_cancelacion = "N/A" },
+                    new EstadoDePedido { NombreEstado = "Sin preparar", motivo_cancelacion = "N/A" },
+                    new EstadoDePedido { NombreEstado = "Preparar pedido", motivo_cancelacion = "N/A" },
+                    new EstadoDePedido { NombreEstado = "Demorado", motivo_cancelacion = "N/A" },
+                    new EstadoDePedido { NombreEstado = "Listo para despachar", motivo_cancelacion = "N/A" },
+                    new EstadoDePedido { NombreEstado = "Despachando", motivo_cancelacion = "N/A" },
+                    new EstadoDePedido { NombreEstado = "En camino", motivo_cancelacion = "N/A" },
                     new EstadoDePedido { NombreEstado = "Entregado", motivo_cancelacion = "N/A" },
-                    new EstadoDePedido { NombreEstado = "Cancelado", motivo_cancelacion = "Falta de stock" }
+                    new EstadoDePedido { NombreEstado = "Entrega fallida", motivo_cancelacion = "N/A" },
+                    new EstadoDePedido { NombreEstado = "Devolución", motivo_cancelacion = "N/A" },
+                    new EstadoDePedido { NombreEstado = "Cancelado", motivo_cancelacion = "Falta de stock o solicitud cliente" }
                 );
                 context.SaveChanges();
             }
@@ -33,9 +40,8 @@ namespace Back.Data
                 var rosario = new Localidad { Ciudad = "Rosario", Provincia = "Santa Fe", CodigoPostal = "2000" };
 
                 context.Localidades.AddRange(cordoba, rosario);
-                context.SaveChanges(); // Guardamos para tener el IDLocalidad
+                context.SaveChanges();
 
-                // Barrios vinculados a Córdoba (ID 1 aprox)
                 context.Barrios.AddRange(
                     new Barrio { Nombre = "Nueva Córdoba", IDLocalidad = cordoba.IDLocalidad },
                     new Barrio { Nombre = "Centro", IDLocalidad = cordoba.IDLocalidad },
@@ -63,11 +69,10 @@ namespace Back.Data
                     Nombre = "Admin",
                     Apellido = "Sistema",
                     UsuarioNombre = "admin",
-                    Contraseña = "123", // Recuerda usar Hash en producción
+                    Contraseña = "123",
                     Rol = "Administrador",
                     Mail = "admin@farmacia.com",
-                    IDSucursal = sucursal.IDSucursal,
-                   
+                    IDSucursal = sucursal.IDSucursal
                 });
                 context.SaveChanges();
             }
@@ -102,8 +107,63 @@ namespace Back.Data
                 );
                 context.SaveChanges();
             }
+            // --- CARGA DE PEDIDO INICIAL (SEED DATA) ---
+            if (!context.Pedidos.Any())
+            {
+                // 1. Obtener datos necesarios (Aseguramos que existan)
+                var cliente = context.Clientes.First();
+                var producto = context.Productos.First();
+                var estadoInicial = context.EstadosDePedidos.First(e => e.NombreEstado == "Sin preparar");
+                var sucursal = context.Sucursales.First();
+                var localidad = context.Localidades.First();
+                var usuarioSistema = context.Usuarios.First();
 
-            Console.WriteLine("--- Semillado completo de todas las tablas realizado con éxito ---");
+                // 2. Crear el Pedido
+                var pedido = new Pedido
+                {
+                    Fecha = DateTime.Now,
+                    Total = producto.PrecioProducto * 2,
+                    FormaDePago = "Efectivo",
+                    EstadoActual = "Sin preparar",
+                    DireccionEntrega = cliente.Direccion,
+                    IDLocalidad = localidad.IDLocalidad,
+                    FechaEntregaEstimada = DateTime.Now.AddDays(1),
+                    HoraEntregaEstimada = DateTime.Now.TimeOfDay,
+                    IDCliente = cliente.IDCliente,
+                    IDEstadoDePedido = estadoInicial.IDEstadoDePedido,
+                    IDUsuario = usuarioSistema.IDUsuario,
+                    IDSucursal = sucursal.IDSucursal
+                };
+
+                context.Pedidos.Add(pedido);
+                context.SaveChanges(); // Guardamos para obtener el IDPedido generado
+
+                // 3. Crear el Detalle del Pedido
+                // Nota: Ya NO usamos PedidoIDPedido ni ProductoIDProducto
+                context.DetallesDePedidos.Add(new DetalleDePedido
+                {
+                    IDPedido = pedido.IDPedido,
+                    IDProducto = producto.IDProducto,
+                    Cantidad = 2,
+                    PrecioUnitario = producto.PrecioProducto
+                });
+
+                // 4. Crear el Historial de Estado inicial
+                // Nota: Ya NO usamos las propiedades duplicadas (sombras de EF)
+                context.HistorialesDeEstados.Add(new HistorialDeEstados
+                {
+                    IDPedido = pedido.IDPedido,
+                    IDEstadoDePedido = estadoInicial.IDEstadoDePedido,
+                    IDUsuario = usuarioSistema.IDUsuario,
+                    fecha_hora_inicio = DateTime.Now,
+                    fecha_hora_fin = null,
+                    Observaciones = "Pedido recibido por el sistema"
+                });
+
+                context.SaveChanges();
+            }
+
+            Console.WriteLine("--- Semillado completo incluyendo Pedidos e Historial realizado con éxito ---");
         }
     }
 }
