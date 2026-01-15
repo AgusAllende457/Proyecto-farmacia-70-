@@ -1,13 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-interface ImportMetaEnv {
-    readonly VITE_API_BASE_URL?: string;
-}
-
-interface ImportMeta {
-    readonly env: ImportMetaEnv;
-}
-
 /**
  * IMPORTANTE: 
  * Según tu Program.cs y launchSettings.json, el puerto HTTPS es 7075.
