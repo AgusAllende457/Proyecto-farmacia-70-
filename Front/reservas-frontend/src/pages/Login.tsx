@@ -38,7 +38,8 @@ export const Login: React.FC = () => {
         setIsLoading(true);
 
         try {
-            await login({ ...formData, rol: selectedRole } as any);
+            await login(formData);
+            localStorage.setItem('farmacia_role', selectedRole);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Usuario o contraseña incorrectos');
         } finally {
@@ -96,7 +97,7 @@ export const Login: React.FC = () => {
 
                             <div className="relative">
                                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                <input
+                                <Input
                                     type="text"
                                     placeholder="Usuario"
                                     value={formData.usuario}
@@ -108,7 +109,7 @@ export const Login: React.FC = () => {
 
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                <input
+                                <Input
                                     type="password"
                                     placeholder="Contraseña"
                                     value={formData.password}

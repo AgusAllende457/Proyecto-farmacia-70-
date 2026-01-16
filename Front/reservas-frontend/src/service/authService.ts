@@ -1,16 +1,34 @@
+import axios from 'axios';
 import { api } from './api';
-import { LoginDTO, AuthResponse } from '../types/auth.types';
+import { LoginDTO, AuthResponse, UserDTO } from '../types/auth.types';
+
+const API_URL = 'http://localhost:5000/api/auth';
 
 export const authService = {
     
     async login(credentials: LoginDTO): Promise<AuthResponse> {
-        const response = await api.post<AuthResponse>('/auth/login', credentials);
-        return response.data;
+        try {
+            const response = await api.post<AuthResponse>('/auth/login', credentials);
+            return response.data;
+        } catch (error) {
+            console.error('Error en login:', error);
+            throw error;
+        }
     },
 
-    saveAuth(token: string, user: any): void {
-        localStorage.setItem('farmacia_token', token);
-        localStorage.setItem('farmacia_user', JSON.stringify(user));
+    async generateToken(user: UserDTO): Promise<string | null> {
+        try {
+            const response = await axios.post<{ token: string }>(`${API_URL}/token`, user);
+            return response.data.token;
+        } catch (error) {
+            console. error('Error generando token:', error);
+            return null;
+        }
+    },
+
+    saveAuth(token: string, user:  any): void {
+        localStorage. setItem('farmacia_token', token);
+        localStorage.setItem('farmacia_user', JSON. stringify(user));
     },
 
     getStoredAuth(): { token: string | null; user: any | null } {
@@ -33,6 +51,8 @@ export const authService = {
     async logout(): Promise<void> {
         try {
             await api.post('/auth/logout');
+        } catch (error) {
+            console. error('Error en logout:', error);
         } finally {
             this.clearAuth();
         }
