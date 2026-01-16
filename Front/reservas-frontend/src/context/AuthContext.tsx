@@ -21,16 +21,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsLoading(false);
     }, []);
 
-    const login = async (credentials: LoginDTO) => {
+    const login = async (credentials:  LoginDTO) => {
         try {
             const response = await authService.login(credentials);
             
             setToken(response.token);
-            setUser(response.user);
-            authService.saveAuth(response.token, response.user);
+            setUser(response. user);
+            authService.saveAuth(response.token, response. user);
 
-            // Redirigir según el rol (RF8)
-            switch (response.user.rol) {
+            // Obtener el rol desde localStorage (guardado en Login.tsx)
+            const selectedRole = localStorage.getItem('farmacia_role');
+            
+            // Redirigir según el rol seleccionado (RF8)
+            switch (selectedRole) {
                 case 'Administrador':
                     navigate('/dashboard/admin');
                     break;
@@ -41,6 +44,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     navigate('/dashboard/cadete');
                     break;
                 default:
+                    // Si no hay rol, usar el del usuario del servidor
                     navigate('/');
             }
         } catch (error) {
@@ -53,6 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setUser(null);
         setToken(null);
         authService.clearAuth();
+        localStorage.removeItem('farmacia_role'); // Limpiar también el rol
         navigate('/login');
     };
 

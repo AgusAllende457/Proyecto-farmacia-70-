@@ -20,14 +20,15 @@ namespace Back
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            
 
-            // --- CONFIGURACIÓN DE SERVICIOS ---
+            // --- CONFIGURACIï¿½N DE SERVICIOS ---
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Configuración de Base de Datos
+            // Configuraciï¿½n de Base de Datos
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -67,7 +68,7 @@ namespace Back
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
             builder.Services.AddScoped<ITrackingService, TrackingService>();
 
-            // --- CONFIGURACIÓN DE SEGURIDAD JWT ---
+            // --- CONFIGURACIï¿½N DE SEGURIDAD JWT ---
             var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value ?? "Clave_Super_Secreta_Farmacia_2024");
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
@@ -82,7 +83,7 @@ namespace Back
 
             var app = builder.Build();
 
-            // --- INICIALIZACIÓN DE DATOS (SEEDING) ---
+            // --- INICIALIZACIï¿½N DE DATOS (SEEDING) ---
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -90,8 +91,8 @@ namespace Back
                 {
                     var context = services.GetRequiredService<AppDbContext>();
 
-                    // ESTO BORRARÁ TODA LA BASE DE DATOS Y LA CREARÁ DE CERO
-                    // Úsalo solo en desarrollo para limpiar las llaves foráneas rebeldes
+                    // ESTO BORRARï¿½ TODA LA BASE DE DATOS Y LA CREARï¿½ DE CERO
+                    // ï¿½salo solo en desarrollo para limpiar las llaves forï¿½neas rebeldes
                     context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
 
@@ -100,7 +101,7 @@ namespace Back
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Ocurrió un error al sembrar la base de datos.");
+                    logger.LogError(ex, "Ocurriï¿½ un error al sembrar la base de datos.");
                 }
             }
 

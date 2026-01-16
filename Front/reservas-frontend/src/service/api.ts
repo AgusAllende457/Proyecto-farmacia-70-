@@ -5,7 +5,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
  * Según tu Program.cs y launchSettings.json, el puerto HTTPS es 7075.
  * Si usas Vite, puedes crear un archivo .env con VITE_API_BASE_URL=https://localhost:7075/api
  */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:7075/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 export const api = axios.create({
     baseURL: API_BASE_URL,
