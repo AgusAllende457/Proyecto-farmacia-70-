@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/babel__core": "^7.20.5",
     "@types/babel__generator": "^7.27.0",
     "@types/babel__template": "^7.4.4",
@@ -19,6 +20,7 @@
     "@types/istanbul-lib-coverage": "^2.0.6",
     "@types/istanbul-lib-report": "^3.0.3",
     "@types/istanbul-reports": "^3.0.4",
+    "@types/jest": "^30.0.0",
     "@types/json-schema": "^7.0.15",
     "@types/json5": "^0.0.30",
     "@types/mime": "^3.0.4",

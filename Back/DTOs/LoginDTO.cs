@@ -4,8 +4,8 @@ namespace Back.DTOs
 {
     public class LoginDTO
     {
-    public string UsuarioNombre { get; set; } 
-    public string Contraseña { get; set; }
+    public string Usuario { get; set; } 
+    public string Password { get; set; }
     }
 
     // Ref: RF8 - Asignar permisos diferenciados según perfil (Admin, Operario, Cadete).
