@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from "../service/api";
 import { UserDTO } from '../types/auth.types';
 
 interface AuthContextType {
@@ -30,37 +30,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   // ✅ Función de login
-  const login = async (usuario: string, password: string) => {
+const login = async (usuario: string, password: string) => {
     try {
       setIsLoading(true);
-      const response = await axios.post('/api/auth/login', {
-        usuario,   // 👈 coincide con LoginDTO del back
-        password   // 👈 coincide con LoginDTO del back
+
+      // 🕵️‍♂️ PASO 1: MIRA LA CONSOLA DEL NAVEGADOR (F12)
+      // Si aquí ves cadenas vacías "", el problema está en el Login.tsx
+      console.log("Intentando login con:", { Usuario: usuario, Password: password });
+
+      // ✅ PASO 2: ESTRUCTURA PLANA Y MAYÚSCULAS
+      // El error nos confirmó que el backend busca "Usuario" y "Password" en la raíz.
+      const response = await api.post('/auth/login', { 
+        Usuario: usuario, 
+        Password: password 
       });
 
+      // ... resto del código (guardar token, etc) ...
       const { token, user } = response.data;
-
-      // Guardamos en localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
-
-      // Configuramos axios para enviar el token en cada request
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUser(user);
       setIsAuthenticated(true);
+
     } catch (error: any) {
-      throw error.response?.data?.message || 'Error al iniciar sesión';
+      console.error("Error en login:", error);
+      // Esto captura el mensaje exacto del servidor para mostrártelo
+      const mensajeError = error.response?.data?.title || error.response?.data?.message || 'Error al iniciar sesión';
+      throw new Error(mensajeError);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   // ✅ Función de logout
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    delete axios.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common['Authorization'];
     setUser(null);
     setIsAuthenticated(false);
   };

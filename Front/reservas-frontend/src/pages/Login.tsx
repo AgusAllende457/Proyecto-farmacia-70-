@@ -38,7 +38,7 @@ export const Login: React.FC = () => {
         setIsLoading(true);
 
         try {
-            await login(formData);
+            await login(formData.usuario, formData.password);
             localStorage.setItem('farmacia_role', selectedRole);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Usuario o contraseña incorrectos');
