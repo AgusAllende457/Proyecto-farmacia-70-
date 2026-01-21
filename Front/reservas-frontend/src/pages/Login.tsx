@@ -4,8 +4,10 @@ import { Button } from '@components/common/Button';
 import { Input } from '@components/common/Input';
 import { Alert } from '@components/common/Alert';
 import { Pill, Lock, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Login: React.FC = () => {
+    const navigate = useNavigate();
     const { login } = useAuth();
     const [formData, setFormData] = useState({
         usuario: '',
@@ -39,7 +41,27 @@ export const Login: React.FC = () => {
 
         try {
             await login(formData.usuario, formData.password);
+            
+            // Guardamos el rol antes de navegar
             localStorage.setItem('farmacia_role', selectedRole);
+
+            // ✅ Lógica de redirección basada en tus rutas definidas
+            switch (selectedRole) {
+                case 'Administrador':
+                    navigate('/dashboard/admin');
+                    break;
+                case 'Operario':
+                    navigate('/dashboard/operario');
+                    break;
+                case 'Cadete':
+                    navigate('/dashboard/cadete');
+                    break;
+                default:
+                    // Por seguridad, si el rol no coincide, lo mandamos al home o mostramos error
+                    navigate('/'); 
+                    break;
+            }
+
         } catch (err: any) {
             setError(err.response?.data?.message || 'Usuario o contraseña incorrectos');
         } finally {
