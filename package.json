@@ -1,7 +1,6 @@
 {
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
     "@types/babel__core": "^7.20.5",
     "@types/babel__generator": "^7.27.0",
     "@types/babel__template": "^7.4.4",
@@ -39,7 +38,6 @@
     "@types/serve-static": "^2.2.0",
     "@types/sockjs": "^0.3.36",
     "@types/stack-utils": "^2.0.3",
-    "@types/testing-library__react": "^10.0.1",
     "@types/trusted-types": "^2.0.7",
     "@types/ws": "^8.18.1",
     "@types/yargs": "^17.0.35",

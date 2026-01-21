@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { api } from './api';
+import { api } from "../service/api";
 import { LoginDTO, AuthResponse, UserDTO } from '../types/auth.types';
 
 const API_URL = 'http://localhost:5000/api/auth';
