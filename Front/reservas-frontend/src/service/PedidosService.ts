@@ -29,7 +29,20 @@ async asignarCadete(data: AssignDeliveryDTO): Promise<void> {
 
 // RF2 - Cambiar estado del pedido (principalmente Cadete)
 async cambiarEstado(data: ChangeOrderStatusDTO): Promise<void> {
-    await api.put(`/orders/${data.idPedido}/estado`, data);
+    // 1. Preparamos el objeto con los nombres EXACTOS de tu DTO C#
+    const payload = {
+        IDPedido: data.idPedido,
+        IDNuevoEstado: data.idNuevoEstado,
+        IDUsuario: data.idUsuario,
+        Observaciones: data.observaciones || "",
+        // Agregamos el motivo de cancelación para el reporte de Agustina
+        MotivoCancelacion: data.idNuevoEstado === 8 ? data.observaciones : null
+    };
+
+    // 2. Enviamos la petición
+    // La URL usa idPedido (minúscula, es solo para la ruta)
+    // El Body usa payload (Mayúsculas, para que .NET lo entienda)
+    await api.put(`/orders/${data.idPedido}/estado`, payload);
 },
 
 // Obtener pedidos por rol

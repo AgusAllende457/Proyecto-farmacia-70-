@@ -18,7 +18,7 @@ function App() {
           {/* Ruta Pública */}
           <Route path="/login" element={<Login />} />
 
-          {/* RUTAS EXCLUSIVAS PARA ADMINISTRADOR (Agustina) */}
+          {/* RUTAS EXCLUSIVAS PARA ADMINISTRADOR */}
           <Route
             path="/dashboard/admin"
             element={

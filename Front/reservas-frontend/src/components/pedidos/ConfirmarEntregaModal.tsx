@@ -40,12 +40,13 @@ export const ConfirmarEntregaModal: React.FC<ConfirmarEntregaModalProps> = ({
 
         try {
             // RF2 - Cambiar estado del pedido (Cadete)
+            
             await pedidosService.cambiarEstado({
-                idPedido: pedido.idPedido,
-                idNuevoEstado: tipoResultado === 'entregado' ? 7 : 8, // 7: Entregado, 8: Entrega fallida
-                idUsuario: user!.id,
-                observaciones: observaciones || undefined,
-            });
+        idPedido: pedido.idPedido,
+        idNuevoEstado: tipoResultado === 'entregado' ? 7 : 8, 
+        idUsuario: user!.id,
+        observaciones: observaciones, // Este texto viajará como Observaciones y MotivoCancelacion
+        });
 
             onSuccess();
             onClose();

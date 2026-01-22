@@ -8,5 +8,7 @@ namespace Back.Repositories.Interfaces
     public interface IPedidoRepository
     {
         Task<IEnumerable<OrderSummaryDTO>> GetFilteredOrdersAsync(OrderFilterDTO filters);
+
+        Task<bool> ActualizarEstadoPedidoAsync(ChangeOrderStatusDTO datos);
     }
 }

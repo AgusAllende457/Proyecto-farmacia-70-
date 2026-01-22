@@ -59,22 +59,28 @@ namespace Back.Controllers
         /// </summary>
         [Authorize(Roles = "Cadete,Administrador")]
         [HttpPut("{id}/estado")]
-        public async Task<IActionResult> CambiarEstado(int id, [FromBody] ChangeOrderStatusDTO changeStatusDto)
-        {
-            if (id != changeStatusDto.IDPedido)
-            {
-                return BadRequest("El ID del pedido no coincide.");
-            }
+public async Task<IActionResult> CambiarEstado(int id, [FromBody] ChangeOrderStatusDTO changeStatusDto)
+{
+    // 1. Verificamos si el modelo es válido según los [Required]
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState); // Esto te dirá qué campo falta
+    }
 
-            var resultado = await _statusService.CambiarEstadoAsync(changeStatusDto);
+    if (id != changeStatusDto.IDPedido)
+    {
+        return BadRequest($"Error de coincidencia: Ruta={id}, DTO={changeStatusDto.IDPedido}");
+    }
 
-            if (!resultado)
-            {
-                return BadRequest(new { message = $"No se pudo actualizar el estado. Verifique el flujo lógico del pedido." });
-            }
+    var resultado = await _statusService.CambiarEstadoAsync(changeStatusDto);
 
-            return Ok(new { message = "Estado del pedido actualizado correctamente." });
-        }
+    if (!resultado)
+    {
+        return BadRequest(new { message = "La lógica de negocio rechazó el cambio (ej: el pedido no está en el estado previo correcto)." });
+    }
+
+    return Ok(new { message = "Correcto" });
+}
 
 
         // --- SECCIÓN CONSULTAS: TRAZABILIDAD ---
