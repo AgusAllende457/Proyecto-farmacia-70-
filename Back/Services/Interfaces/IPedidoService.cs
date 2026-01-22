@@ -12,6 +12,8 @@ namespace Back.Services.Interfaces
     public interface IPedidoService
     {
         Task<IEnumerable<OrderSummaryDTO>> GetFilteredOrdersAsync(OrderFilterDTO filters);
+        
+        Task<bool> ActualizarEstadoPedidoAsync(int id, ChangeOrderStatusDTO datos);
 
     }
 }

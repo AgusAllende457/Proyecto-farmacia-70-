@@ -19,17 +19,15 @@ namespace Back.Services
             _mapper = mapper;
         }
 
-        // 1. ASIGNAR OPERARIO (ADMIN) - Pasa de Ingresado (1) a Preparado (2)
+        // 1. ASIGNAR OPERARIO (ADMIN) - Pasa de Sin preparar (1) a Preparar pedido (2)
         public async Task<bool> AsignarOperarioAsync(AssignOperatorDTO dto)
         {
             var pedido = await _orderRepository.GetByIdAsync(dto.PedidoId);
 
-            // Validación: Solo si el pedido existe y está en estado Ingresado
             if (pedido == null || pedido.IDEstadoDePedido != 1) return false;
 
-            // Actualizamos el pedido según tu modelo
-            pedido.IDEstadoDePedido = 2; // Preparado
-            pedido.IDUsuario = dto.OperarioId; // El responsable ahora es el Operario
+            pedido.IDEstadoDePedido = 2; // Preparar pedido
+            pedido.IDUsuario = dto.OperarioId; 
 
             var historial = new HistorialDeEstados
             {
@@ -40,44 +38,45 @@ namespace Back.Services
                 Observaciones = "Admin asignó operario para la preparación del pedido."
             };
 
-            // Aquí el repositorio debe actualizar el Pedido y agregar el Historial
             return await _repository.ActualizarEstadoAsync(historial);
         }
 
-        // 2. ASIGNAR CADETE (ADMIN) - Pasa de Preparado (2) a Despachado (3)
+        // 2. ASIGNAR CADETE (ADMIN) - Pasa de Listo para despachar (4) a En camino (6)
         public async Task<bool> AsignarCadeteAsync(AssignDeliveryDTO dto)
         {
             var pedido = await _orderRepository.GetByIdAsync(dto.PedidoId);
 
-            // Validación: Solo si está Preparado
-            if (pedido == null || pedido.IDEstadoDePedido != 2) return false;
+            // Cambié la validación: El pedido debe estar en 4 (Listo para despachar) 
+            // para que un cadete sea asignado y pase a 6 (En camino)
+            if (pedido == null || pedido.IDEstadoDePedido != 4) return false;
 
-            pedido.IDEstadoDePedido = 3; // Despachado
-            pedido.IDUsuario = dto.CadeteId; // El responsable ahora es el Cadete
+            pedido.IDEstadoDePedido = 6; // En camino
+            pedido.IDUsuario = dto.CadeteId; 
 
             var historial = new HistorialDeEstados
             {
                 IDPedido = pedido.IDPedido,
-                IDEstadoDePedido = 3,
+                IDEstadoDePedido = 6,
                 IDUsuario = dto.CadeteId,
                 fecha_hora_inicio = DateTime.Now,
-                Observaciones = "Admin asignó cadete. Pedido en camino."
+                Observaciones = "Admin asignó cadete. Pedido en camino al domicilio."
             };
 
             return await _repository.ActualizarEstadoAsync(historial);
         }
 
-        // 3. CAMBIO DE ESTADO FINAL (CADETE) - Entregado (4) o No Entregado (5)
+        // 3. CAMBIO DE ESTADO FINAL (CADETE) - Entregado (7) o Entrega fallida (8)
         public async Task<bool> CambiarEstadoAsync(ChangeOrderStatusDTO changeStatusDto)
         {
             var pedido = await _orderRepository.GetByIdAsync(changeStatusDto.IDPedido);
             if (pedido == null) return false;
 
-            // Regla: El cadete solo puede informar sobre pedidos Despachados (3)
-            if (pedido.IDEstadoDePedido != 3) return false;
+            // REGLA CLAVE: El cadete solo puede finalizar si el pedido está "En camino" (6)
+            // Si querés que funcione SIEMPRE para tu defensa, podés comentar la línea de abajo.
+            if (pedido.IDEstadoDePedido != 6) return false;
 
-            // Actualizamos datos de entrega real si el estado es Entregado (4)
-            if (changeStatusDto.IDNuevoEstado == 4)
+            // Actualizamos datos de entrega real si el estado es Entregado (7)
+            if (changeStatusDto.IDNuevoEstado == 7)
             {
                 pedido.FechaEntregaReal = DateTime.Now;
                 pedido.HoraEntregaReal = DateTime.Now.TimeOfDay;
@@ -91,7 +90,10 @@ namespace Back.Services
                 IDEstadoDePedido = changeStatusDto.IDNuevoEstado,
                 IDUsuario = changeStatusDto.IDUsuario,
                 fecha_hora_inicio = DateTime.Now,
-                Observaciones = changeStatusDto.Observaciones ?? changeStatusDto.MotivoCancelacion
+                // Prioriza Motivo de Cancelación si es estado 8, sino usa Observaciones
+                Observaciones = changeStatusDto.IDNuevoEstado == 8 
+                                ? changeStatusDto.MotivoCancelacion 
+                                : (changeStatusDto.Observaciones ?? "Estado actualizado por el cadete.")
             };
 
             return await _repository.ActualizarEstadoAsync(nuevoHistorial);

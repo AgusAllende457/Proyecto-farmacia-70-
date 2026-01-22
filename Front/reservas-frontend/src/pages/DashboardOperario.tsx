@@ -2,15 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '@components/layout/DashboardLayout';
 import { Card } from '@components/common/Card';
 import { Badge } from '@components/common/Badge';
+import { Button } from '@components/common/Button'; // Importado
+import { DetallePedidoModal } from '../components/pedidos/DetallePedidoModal'; // Importado
 import { pedidosService } from '../service/PedidosService';
 import { OrderSummaryDTO } from '../types/pedido.types';
 import { useAuth } from '@context/AuthContext';
-import { Package, Clock, CheckCircle } from 'lucide-react';
+import { Package, Clock, CheckCircle, Eye } from 'lucide-react'; // Añadido Eye
 
 export const DashboardOperario: React.FC = () => {
     const { user } = useAuth();
     const [pedidos, setPedidos] = useState<OrderSummaryDTO[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // Estados para el modal de detalle
+    const [selectedPedidoDetalle, setSelectedPedidoDetalle] = useState<OrderSummaryDTO | null>(null);
+    const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
 
     useEffect(() => {
         loadPedidos();
@@ -27,8 +33,23 @@ export const DashboardOperario: React.FC = () => {
         }
     };
 
+    const handleVerDetalle = (pedido: OrderSummaryDTO) => {
+        setSelectedPedidoDetalle(pedido);
+        setModalDetalleOpen(true);
+    };
+
     const pedidosPreparando = pedidos.filter(p => p.estadoNombre === 'Preparar pedido');
     const pedidosListos = pedidos.filter(p => p.estadoNombre === 'Listo para despachar');
+
+    if (loading) {
+        return (
+            <DashboardLayout>
+                <div className="flex items-center justify-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout>
@@ -89,6 +110,7 @@ export const DashboardOperario: React.FC = () => {
                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Estado</th>
                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Total</th>
                                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Fecha</th>
+                                    <th className="px-4 py-3 text-right text-sm font-medium text-gray-600">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
@@ -113,6 +135,14 @@ export const DashboardOperario: React.FC = () => {
                                         <td className="px-4 py-3 text-sm text-gray-600">
                                             {new Date(pedido.fecha).toLocaleDateString('es-AR')}
                                         </td>
+                                        <td className="px-4 py-3 text-right">
+                                            <button 
+                                                onClick={() => handleVerDetalle(pedido)}
+                                                className="text-blue-600 hover:text-blue-800 font-bold text-sm flex items-center justify-end gap-1 ml-auto"
+                                            >
+                                                <Eye className="w-4 h-4" /> Ver detalle
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -120,6 +150,18 @@ export const DashboardOperario: React.FC = () => {
                     </div>
                 </Card>
             </div>
+
+            {/* Modal de Detalle */}
+            {selectedPedidoDetalle && (
+                <DetallePedidoModal 
+                    isOpen={modalDetalleOpen} 
+                    onClose={() => {
+                        setModalDetalleOpen(false);
+                        setSelectedPedidoDetalle(null);
+                    }} 
+                    pedido={selectedPedidoDetalle} 
+                />
+            )}
         </DashboardLayout>
     );
 };

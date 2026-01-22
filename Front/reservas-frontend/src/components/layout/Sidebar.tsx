@@ -31,13 +31,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     ],
     Operario: [
       { path: '/dashboard/operario', icon: LayoutDashboard, label: 'Dashboard' },
-      { path: '/mis-pedidos', icon: Package, label: 'Mis Pedidos' },
-      { path: '/seguimiento', icon: ClipboardList, label: 'Seguimiento' },
+      { path: '/mis-pedidos', icon: Package, label: 'Mis Pedidos' }
+      
     ],
     Cadete: [
       { path: '/dashboard/cadete', icon: LayoutDashboard, label: 'Dashboard' },
       { path: '/entregas', icon: MapPin, label: 'Mis Entregas' },
-      { path: '/seguimiento', icon: ClipboardList, label: 'Seguimiento' },
       { path: '/intentos-fallidos', icon: FileText, label: 'Entregas Fallidas' },
     ],
   };

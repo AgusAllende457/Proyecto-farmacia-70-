@@ -11,6 +11,7 @@ using Back.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
 
 
 namespace Back
@@ -21,6 +22,16 @@ namespace Back
         {
             var builder = WebApplication.CreateBuilder(args);
             
+            // Busca donde dice builder.Services.AddControllers() y cámbialo por esto:
+            builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // 1. Mantenemos camelCase (minúsculas) para que el Login y el resto del Front no se rompan
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        
+        // 2. IMPORTANTE: Esto permite que si el Front manda "idPedido" o "IDPedido", .NET lo entienda igual
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 
             // --- CONFIGURACI�N DE SERVICIOS ---
 
@@ -129,5 +140,6 @@ namespace Back
 
             app.Run();
         }
+        
     }
 }

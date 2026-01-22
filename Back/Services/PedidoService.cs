@@ -34,5 +34,15 @@ namespace Back.Services
 
             return await _pedidoRepository.GetFilteredOrdersAsync(filters);
         }
+    
+
+    public async Task<bool> ActualizarEstadoPedidoAsync(int id, ChangeOrderStatusDTO datos)
+{
+    // Validamos que el ID coincida
+    if (id != datos.IDPedido) return false;
+
+    // Aquí podrías agregar lógica: ej. solo el cadete asignado puede finalizar
+    return await _pedidoRepository.ActualizarEstadoPedidoAsync(datos);
+}
     }
 }

@@ -63,5 +63,14 @@ namespace Back.Repositories
                 })
                 .ToListAsync();
         }
+        // Dentro de PedidoRepository.cs
+        public async Task<bool> ActualizarEstadoPedidoAsync(ChangeOrderStatusDTO datos)
+        {
+         // Ejemplo si usas Dapper o SQL puro:
+         // 1. Update de la tabla Pedidos (cambia el IDEstado y el IDUsuario que lo tomó)
+         // 2. Insert en HistorialDeEstados (para la trazabilidad de Agustina)
+        // Por ahora, para que el Service deje de dar error, podés poner:
+        return true; // (Luego lo completamos con tu lógica real de DB)
+        }
     }
 }
