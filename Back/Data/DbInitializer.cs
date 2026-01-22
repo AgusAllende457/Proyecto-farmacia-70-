@@ -1,4 +1,4 @@
-﻿using Back.Data;
+﻿﻿using Back.Data;
 using Back.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,7 +15,6 @@ namespace Back.Data
             context.Database.EnsureCreated();
 
             // --- TABLA: ESTADOS DE PEDIDOS ---
-            // Actualizado con el ciclo de vida completo solicitado
             if (!context.EstadosDePedidos.Any())
             {
                 context.EstadosDePedidos.AddRange(
@@ -64,16 +63,40 @@ namespace Back.Data
             if (!context.Usuarios.Any())
             {
                 var sucursal = context.Sucursales.First();
-                context.Usuarios.Add(new Usuario
-                {
-                    Nombre = "Admin",
-                    Apellido = "Sistema",
-                    UsuarioNombre = "admin",
-                    Contraseña = "123",
-                    Rol = "Administrador",
-                    Mail = "admin@farmacia.com",
-                    IDSucursal = sucursal.IDSucursal
-                });
+                
+                context.Usuarios.AddRange(
+                    new Usuario
+                    {
+                        Nombre = "Admin",
+                        Apellido = "Sistema",
+                        UsuarioNombre = "admin",
+                        Contraseña = "123",
+                        Rol = "Administrador",
+                        Mail = "admin@farmacia.com",
+                        IDSucursal = sucursal.IDSucursal
+                    },
+                    new Usuario
+                    {
+                        Nombre = "Pepe",
+                        Apellido = "Operario",
+                        UsuarioNombre = "operario",
+                        Contraseña = "123",
+                        Rol = "Operario",
+                        Mail = "operario@farmacia.com",
+                        IDSucursal = sucursal.IDSucursal
+                    },
+                    new Usuario
+                    {
+                        Nombre = "Carlos",
+                        Apellido = "Cadete",
+                        UsuarioNombre = "cadete",
+                        Contraseña = "123",
+                        Rol = "Cadete",
+                        Mail = "cadete@farmacia.com",
+                        IDSucursal = sucursal.IDSucursal
+                    }
+                );
+                
                 context.SaveChanges();
             }
 
@@ -107,22 +130,30 @@ namespace Back.Data
                 );
                 context.SaveChanges();
             }
-            // --- CARGA DE PEDIDO INICIAL (SEED DATA) ---
+
+            // --- CARGA DE PEDIDOS (SEED DATA) ---
             if (!context.Pedidos.Any())
             {
-                // 1. Obtener datos necesarios (Aseguramos que existan)
+                // 1. Obtener datos auxiliares
                 var cliente = context.Clientes.First();
-                var producto = context.Productos.First();
-                var estadoInicial = context.EstadosDePedidos.First(e => e.NombreEstado == "Sin preparar");
+                var producto1 = context.Productos.OrderBy(p => p.IDProducto).First(); // Amoxidal
+                var producto2 = context.Productos.OrderByDescending(p => p.IDProducto).First(); // Vitamina C
                 var sucursal = context.Sucursales.First();
                 var localidad = context.Localidades.First();
-                var usuarioSistema = context.Usuarios.First();
+                
+                // Usuarios
+                var usuarioAdmin = context.Usuarios.First(u => u.Rol == "Administrador");
+                var usuarioCadete = context.Usuarios.First(u => u.Rol == "Cadete"); // Recuperamos al cadete
 
-                // 2. Crear el Pedido
-                var pedido = new Pedido
+                // Estados
+                var estadoSinPreparar = context.EstadosDePedidos.First(e => e.NombreEstado == "Sin preparar");
+                var estadoEnCamino = context.EstadosDePedidos.First(e => e.NombreEstado == "En camino");
+
+                // --- PEDIDO 1: SIN PREPARAR (ADMIN) ---
+                var pedido1 = new Pedido
                 {
                     Fecha = DateTime.Now,
-                    Total = producto.PrecioProducto * 2,
+                    Total = producto1.PrecioProducto * 2,
                     FormaDePago = "Efectivo",
                     EstadoActual = "Sin preparar",
                     DireccionEntrega = cliente.Direccion,
@@ -130,40 +161,73 @@ namespace Back.Data
                     FechaEntregaEstimada = DateTime.Now.AddDays(1),
                     HoraEntregaEstimada = DateTime.Now.TimeOfDay,
                     IDCliente = cliente.IDCliente,
-                    IDEstadoDePedido = estadoInicial.IDEstadoDePedido,
-                    IDUsuario = usuarioSistema.IDUsuario,
+                    IDEstadoDePedido = estadoSinPreparar.IDEstadoDePedido,
+                    IDUsuario = usuarioAdmin.IDUsuario, // Asignado al Admin o sin asignar
                     IDSucursal = sucursal.IDSucursal
                 };
 
-                context.Pedidos.Add(pedido);
-                context.SaveChanges(); // Guardamos para obtener el IDPedido generado
+                context.Pedidos.Add(pedido1);
+                context.SaveChanges(); // Guardamos para generar ID
 
-                // 3. Crear el Detalle del Pedido
-                // Nota: Ya NO usamos PedidoIDPedido ni ProductoIDProducto
                 context.DetallesDePedidos.Add(new DetalleDePedido
                 {
-                    IDPedido = pedido.IDPedido,
-                    IDProducto = producto.IDProducto,
+                    IDPedido = pedido1.IDPedido,
+                    IDProducto = producto1.IDProducto,
                     Cantidad = 2,
-                    PrecioUnitario = producto.PrecioProducto
+                    PrecioUnitario = producto1.PrecioProducto
                 });
 
-                // 4. Crear el Historial de Estado inicial
-                // Nota: Ya NO usamos las propiedades duplicadas (sombras de EF)
                 context.HistorialesDeEstados.Add(new HistorialDeEstados
                 {
-                    IDPedido = pedido.IDPedido,
-                    IDEstadoDePedido = estadoInicial.IDEstadoDePedido,
-                    IDUsuario = usuarioSistema.IDUsuario,
+                    IDPedido = pedido1.IDPedido,
+                    IDEstadoDePedido = estadoSinPreparar.IDEstadoDePedido,
+                    IDUsuario = usuarioAdmin.IDUsuario,
                     fecha_hora_inicio = DateTime.Now,
-                    fecha_hora_fin = null,
-                    Observaciones = "Pedido recibido por el sistema"
+                    Observaciones = "Pedido ingresado"
+                });
+
+                // --- PEDIDO 2: EN CAMINO (PARA EL CADETE) ---
+                var pedidoCadete = new Pedido
+                {
+                    Fecha = DateTime.Now.AddHours(-1), // Se hizo hace una hora
+                    Total = producto2.PrecioProducto,
+                    FormaDePago = "Tarjeta",
+                    EstadoActual = "En camino",
+                    DireccionEntrega = "Obispo Oro 450", // Otra dirección
+                    IDLocalidad = localidad.IDLocalidad,
+                    FechaEntregaEstimada = DateTime.Now,
+                    HoraEntregaEstimada = DateTime.Now.AddMinutes(30).TimeOfDay,
+                    IDCliente = cliente.IDCliente,
+                    IDEstadoDePedido = estadoEnCamino.IDEstadoDePedido,
+                    IDUsuario = usuarioCadete.IDUsuario, // ✅ ASIGNADO AL CADETE
+                    IDSucursal = sucursal.IDSucursal
+                };
+
+                context.Pedidos.Add(pedidoCadete);
+                context.SaveChanges(); // Guardamos para generar ID
+
+                context.DetallesDePedidos.Add(new DetalleDePedido
+                {
+                    IDPedido = pedidoCadete.IDPedido,
+                    IDProducto = producto2.IDProducto,
+                    Cantidad = 1,
+                    PrecioUnitario = producto2.PrecioProducto
+                });
+
+                // Historial para el pedido del cadete
+                context.HistorialesDeEstados.Add(new HistorialDeEstados
+                {
+                    IDPedido = pedidoCadete.IDPedido,
+                    IDEstadoDePedido = estadoEnCamino.IDEstadoDePedido,
+                    IDUsuario = usuarioCadete.IDUsuario,
+                    fecha_hora_inicio = DateTime.Now,
+                    Observaciones = "Pedido retirado por cadete Carlos"
                 });
 
                 context.SaveChanges();
             }
 
-            Console.WriteLine("--- Semillado completo incluyendo Pedidos e Historial realizado con éxito ---");
+            Console.WriteLine("--- Semillado completo: Usuarios, Pedido Admin y Pedido Cadete creados ---");
         }
     }
 }

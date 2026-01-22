@@ -10,8 +10,6 @@ import { SeguimientoPedidos } from '@pages/SeguimientoPedidos';
 import { AsignarOperarioPage } from '@pages/AsignarOperario';
 import { AsignarCadetePage } from '@pages/AsignarCadete';
 
-// Pages
-
 function App() {
   return (
     <BrowserRouter>
@@ -20,7 +18,7 @@ function App() {
           {/* Ruta Pública */}
           <Route path="/login" element={<Login />} />
 
-          {/* Rutas Protegidas - Administrador */}
+          {/* RUTAS EXCLUSIVAS PARA ADMINISTRADOR (Agustina) */}
           <Route
             path="/dashboard/admin"
             element={
@@ -45,8 +43,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/seguimiento"
+            element={
+              <ProtectedRoute allowedRoles={['Administrador']}>
+                <SeguimientoPedidos />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Rutas Protegidas - Operario */}
+          {/* RUTA EXCLUSIVA PARA OPERARIO */}
           <Route
             path="/dashboard/operario"
             element={
@@ -56,22 +62,12 @@ function App() {
             }
           />
 
-          {/* Rutas Protegidas - Cadete */}
+          {/* RUTA EXCLUSIVA PARA CADETE */}
           <Route
             path="/dashboard/cadete"
             element={
               <ProtectedRoute allowedRoles={['Cadete']}>
                 <DashboardCadete />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Rutas Compartidas (Todos los roles autenticados) */}
-          <Route
-            path="/seguimiento"
-            element={
-              <ProtectedRoute>
-                <SeguimientoPedidos />
               </ProtectedRoute>
             }
           />
@@ -90,7 +86,7 @@ function App() {
             }
           />
 
-          {/* Redireccionamientos */}
+          {/* Redireccionamientos básicos */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
