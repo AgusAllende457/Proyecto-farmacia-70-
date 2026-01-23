@@ -5,7 +5,7 @@ import { LoginDTO, AuthResponse, UserDTO } from '../types/auth.types';
 const API_URL = 'http://localhost:5000/api/auth';
 
 export const authService = {
-    
+
     async login(credentials: LoginDTO): Promise<AuthResponse> {
         try {
             const response = await api.post<AuthResponse>('/auth/login', credentials);
@@ -57,4 +57,4 @@ export const authService = {
             this.clearAuth();
         }
     },
-};
+}

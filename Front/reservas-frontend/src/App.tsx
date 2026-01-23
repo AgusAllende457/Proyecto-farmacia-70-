@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@context/AuthContext';
 import { ProtectedRoute } from '@components/auth/ProtectedRoute';
+
+// Importación de Páginas
 import { Login } from '@pages/Login';
 import { DashboardAdmin } from '@pages/DashboardAdmin';
 import { DashboardOperario } from '@pages/DashboardOperario';
@@ -9,16 +11,17 @@ import { DashboardCadete } from '@pages/DashboardCadete';
 import { SeguimientoPedidos } from '@pages/SeguimientoPedidos';
 import { AsignarOperarioPage } from '@pages/AsignarOperario';
 import { AsignarCadetePage } from '@pages/AsignarCadete';
+import OrderFormPage from '@pages/orders/OrderFormPage'; // Importamos la nueva página de pedidos
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Ruta Pública */}
+          {/* --- RUTA PÚBLICA --- */}
           <Route path="/login" element={<Login />} />
 
-          {/* RUTAS EXCLUSIVAS PARA ADMINISTRADOR */}
+          {/* --- RUTAS EXCLUSIVAS PARA ADMINISTRADOR --- */}
           <Route
             path="/dashboard/admin"
             element={
@@ -52,7 +55,17 @@ function App() {
             }
           />
 
-          {/* RUTA EXCLUSIVA PARA OPERARIO */}
+          {/* --- RUTAS COMPARTIDAS (ADMIN Y OPERARIO) --- */}
+          <Route
+            path="/pedidos"
+            element={
+              <ProtectedRoute allowedRoles={['Administrador', 'Operario']}>
+                <OrderFormPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* --- RUTA EXCLUSIVA PARA OPERARIO --- */}
           <Route
             path="/dashboard/operario"
             element={
@@ -62,7 +75,7 @@ function App() {
             }
           />
 
-          {/* RUTA EXCLUSIVA PARA CADETE */}
+          {/* --- RUTA EXCLUSIVA PARA CADETE --- */}
           <Route
             path="/dashboard/cadete"
             element={
@@ -72,7 +85,7 @@ function App() {
             }
           />
 
-          {/* Página de No Autorizado */}
+          {/* --- PÁGINA DE NO AUTORIZADO --- */}
           <Route
             path="/unauthorized"
             element={
@@ -86,7 +99,7 @@ function App() {
             }
           />
 
-          {/* Redireccionamientos básicos */}
+          {/* --- REDIRECCIONAMIENTOS BÁSICOS --- */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

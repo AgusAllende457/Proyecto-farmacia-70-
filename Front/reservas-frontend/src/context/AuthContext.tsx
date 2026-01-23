@@ -47,9 +47,14 @@ const login = async (usuario: string, password: string) => {
 
       // ... resto del código (guardar token, etc) ...
       const { token, user } = response.data;
+
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+
+
       setUser(user);
       setIsAuthenticated(true);
 

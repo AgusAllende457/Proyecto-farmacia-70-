@@ -12,5 +12,6 @@ namespace Back.DTOs
         public int? IDCliente { get; set; }
         public DateTime? FechaDesde { get; set; }
         public DateTime? FechaHasta { get; set; }
+        public string? Search { get; set; }
     }
 }
