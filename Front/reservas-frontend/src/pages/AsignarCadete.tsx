@@ -19,13 +19,16 @@ export const AsignarCadetePage: React.FC = () => {
     }, []);
 
     const loadPedidos = async () => {
+        setLoading(true);
         try {
-            const data = await pedidosService.getFilteredOrders({
-                idEstadoDePedido: 4, // Listo para despachar
-            });
+            // CAMBIO CLAVE: Usamos el método específico para cadetes
+            // Este endpoint en el Back-end filtra por IDEstadoDePedido == 2 (Preparado)
+            const data = await pedidosService.getPendientesCadete();
+            
+            // Seteamos los pedidos directamente porque el servidor ya los filtró
             setPedidos(data);
         } catch (error) {
-            console.error('Error cargando pedidos:', error);
+            console.error('Error cargando pedidos para cadete:', error);
         } finally {
             setLoading(false);
         }
@@ -45,10 +48,12 @@ export const AsignarCadetePage: React.FC = () => {
                             <Truck className="w-8 h-8" />
                             Asignar Cadetes
                         </h1>
-                        <p className="text-gray-600 mt-1">Pedidos listos para despacho (RF19)</p>
+                        <p className="text-gray-600 mt-1">
+                            Pedidos con preparación finalizada, listos para despacho.
+                        </p>
                     </div>
                     <Badge variant="success" size="md">
-                        {pedidos.length} listos
+                        {pedidos.length} por despachar
                     </Badge>
                 </div>
 
@@ -59,7 +64,7 @@ export const AsignarCadetePage: React.FC = () => {
                         </div>
                     ) : pedidos.length === 0 ? (
                         <div className="text-center py-12">
-                            <p className="text-gray-500">No hay pedidos listos para despachar</p>
+                            <p className="text-gray-500">No hay pedidos pendientes de despacho.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -83,7 +88,9 @@ export const AsignarCadetePage: React.FC = () => {
                                                 {pedido.clienteNombre}
                                             </td>
                                             <td className="px-4 py-3 text-sm text-gray-600">
-                                                {pedido.responsableNombre}
+                                                <Badge variant="info" >
+                                                    {pedido.responsableNombre || 'Sistema'}
+                                                </Badge>
                                             </td>
                                             <td className="px-4 py-3 text-sm font-medium text-gray-900">
                                                 ${pedido.total.toFixed(2)}

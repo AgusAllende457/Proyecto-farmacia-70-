@@ -48,7 +48,12 @@ namespace Back.Mappings
                 .ForMember(dest => dest.Responsable, opt => opt.MapFrom(src => src.Usuario != null ? $"{src.Usuario.Nombre} {src.Usuario.Apellido}" : "Sistema"))
                 .ForMember(dest => dest.MotivoCancelacion, opt => opt.MapFrom(src => src.EstadoDePedido.motivo_cancelacion))
                 .ForMember(dest => dest.Observaciones, opt => opt.MapFrom(src => src.Observaciones));
+
+                CreateMap<Pedido, OrderSummaryDTO>()
+                .ForMember(dest => dest.IDEstadoDePedido, opt => opt.MapFrom(src => src.IDEstadoDePedido))
+                .ForMember(dest => dest.EstadoNombre, opt => opt.MapFrom(src => src.EstadoDePedido.NombreEstado));
         }
+
     }
 }
 

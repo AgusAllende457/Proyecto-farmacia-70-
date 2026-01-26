@@ -4,7 +4,7 @@ import { Card } from '@components/common/Card';
 import { Badge } from '@components/common/Badge';
 import { Button } from '@components/common/Button';
 import { AsignarOperarioModal } from '@components/pedidos/AsignarOperarioModal';
-import { pedidosService } from '@/service/PedidosService';
+import { pedidosService } from '../service/PedidosService'; // Corregido el path a 'services'
 import { OrderSummaryDTO } from '@/types/pedido.types';
 import { Users } from 'lucide-react';
 
@@ -18,26 +18,36 @@ export const AsignarOperarioPage: React.FC = () => {
         loadPedidos();
     }, []);
 
-    const loadPedidos = async () => {
-        try {
-            const data = await pedidosService.getFilteredOrders({
-                idEstadoDePedido: 1,
-            });
-            setPedidos(data);
-        } catch (error) {
-            console.error('Error cargando pedidos:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+ const loadPedidos = async () => {
+    setLoading(true);
+    try {
+        // 1. Pedimos los datos al endpoint que ya filtra en el servidor (ID 1)
+        const data = await pedidosService.getPendientesOperario();
+        
+        console.log("Datos crudos del servidor:", data);
 
+        // 2. En lugar de filtrar estrictamente, validamos que los datos existan.
+        // Si el endpoint /pendientes-operario funciona, 'data' ya solo trae los ID 1.
+        if (data && data.length > 0) {
+            setPedidos(data);
+        } else {
+            setPedidos([]);
+        }
+    } catch (error) {
+        console.error('Error cargando pedidos:', error);
+        setPedidos([]);
+    } finally {
+        setLoading(false);
+    }
+};
     const handleAsignar = (pedido: OrderSummaryDTO) => {
         setSelectedPedido(pedido);
         setModalOpen(true);
     };
 
     const handleSuccess = () => {
-        loadPedidos();
+        setModalOpen(false); // Cerramos el modal
+        loadPedidos(); // Recargamos la lista (el pedido ya no saldrá porque cambió a ID 2)
     };
 
     return (
@@ -49,10 +59,12 @@ export const AsignarOperarioPage: React.FC = () => {
                             <Users className="w-8 h-8" />
                             Asignar Operarios
                         </h1>
-                        <p className="text-gray-600 mt-1">Pedidos pendientes de asignación (RF18)</p>
+                        <p className="text-gray-600 mt-1">
+                            Solo se muestran pedidos en estado <strong>'Sin preparar'</strong>.
+                        </p>
                     </div>
                     <Badge variant="info" size="md">
-                        {pedidos.length} pendientes
+                        {pedidos.length} pedidos por asignar
                     </Badge>
                 </div>
 
@@ -63,7 +75,7 @@ export const AsignarOperarioPage: React.FC = () => {
                         </div>
                     ) : pedidos.length === 0 ? (
                         <div className="text-center py-12">
-                            <p className="text-gray-500">No hay pedidos pendientes de asignación</p>
+                            <p className="text-gray-500">No hay pedidos pendientes de asignación de operario.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
