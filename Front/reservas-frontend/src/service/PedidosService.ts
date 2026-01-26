@@ -1,37 +1,15 @@
 import { api } from './api';
 import {
     OrderSummaryDTO,
-    OrderFilterDTO,
     AssignOperatorDTO,
     AssignDeliveryDTO,
     ChangeOrderStatusDTO,
 } from '@/types/pedido.types';
 
 export const pedidosService = {
-    // --- NUEVOS MÉTODOS FILTRADOS ---
-
-    /**
-     * Trae SOLO pedidos en estado "Sin preparar" (ID 1)
-     * Úsalo en la pantalla de Asignar Operario
-     */
-    async getPendientesOperario(): Promise<OrderSummaryDTO[]> {
-        const response = await api.get<OrderSummaryDTO[]>('/orders/pendientes-operario');
-        return response.data;
-    },
-
-    /**
-     * Trae SOLO pedidos en estado "Preparado" (ID 2)
-     * Úsalo en la pantalla de Asignar Cadete
-     */
-    async getPendientesCadete(): Promise<OrderSummaryDTO[]> {
-        const response = await api.get<OrderSummaryDTO[]>('/orders/pendientes-cadete');
-        return response.data;
-    },
-
-    // --- MÉTODOS EXISTENTES ---
-
     async getFilteredOrders(filters: any): Promise<OrderSummaryDTO[]> {
-        const cleanFilters: any = {};
+        // Construimos el objeto params con las llaves exactas que espera C# en el OrderFilterDTO
+        const params: any = {};
         
         const estadoMap: { [key: string]: number } = {
             'Sin preparar': 1,
@@ -42,51 +20,87 @@ export const pedidosService = {
             'En camino': 6,
             'Entregado': 7,
             'Entrega fallida': 8,
-            'Cancelado': 9
+            'Cancelado': 10 
         };
 
-        if (filters.search) cleanFilters.search = filters.search;
-        
-        if (filters.estado && filters.estado !== 'Todos') {
-            cleanFilters.idEstado = estadoMap[filters.estado];
+        // 1. Mapeo de búsqueda (Search)
+        if (filters.search) {
+            params.Search = filters.search;
         }
         
-        if (filters.idOperario) cleanFilters.idOperario = filters.idOperario;
-        if (filters.idCadete) cleanFilters.idCadete = filters.idCadete;
-        if (filters.fecha) cleanFilters.fecha = filters.fecha;
-        if (filters.idUsuario) cleanFilters.idUsuario = filters.idUsuario;
+        // 2. Mapeo de Estado (IDEstadoDePedido)
+        if (filters.idEstadoDePedido && filters.idEstadoDePedido > 0) {
+            params.IDEstadoDePedido = filters.idEstadoDePedido;
+        } 
+        else if (filters.estadoNombre && filters.estadoNombre !== 'Todos') {
+            params.IDEstadoDePedido = estadoMap[filters.estadoNombre];
+        } else if (filters.estado && filters.estado !== 'Todos') {
+            params.IDEstadoDePedido = estadoMap[filters.estado];
+        }
+        
+        // 3. Mapeo de Usuario (IDUsuario)
+        // Unificamos idOperario/idCadete al nombre de propiedad que espera el Repository: IDUsuario
+        if (filters.idOperario) params.IDUsuario = filters.idOperario;
+        else if (filters.idCadete) params.IDUsuario = filters.idCadete;
+        else if (filters.idUsuario) params.IDUsuario = filters.idUsuario;
 
-        const response = await api.get<OrderSummaryDTO[]>('/filtrarpedidos/reporte', {
-            params: cleanFilters,
+        // 4. Mapeo de Fechas (FechaDesde / FechaHasta)
+        if (filters.fechaDesde) params.FechaDesde = filters.fechaDesde;
+        if (filters.fechaHasta) params.FechaHasta = filters.fechaHasta;
+
+        // DEBUG: Verifica en la consola que IDEstadoDePedido cambie al tocar los botones
+        console.log("Filtros enviados al Backend:", params);
+
+        // Cambiamos la ruta para que coincida con OrdersController.cs [HttpGet("reporte")]
+        const response = await api.get<OrderSummaryDTO[]>('/Orders/reporte', {
+            params: params,
         });
 
         return response.data;
     },
 
+    async getPedidosByRol(rol: string, userId: number, otrosFiltros: any = {}): Promise<OrderSummaryDTO[]> {
+        let filters = { ...otrosFiltros };
+        
+        // Asignamos el ID del usuario logueado según su rol para que el filtrado sea automático
+        if (rol === 'Operario') {
+            filters.idOperario = userId;
+        } else if (rol === 'Cadete') {
+            filters.idCadete = userId;
+        }
+        
+        return this.getFilteredOrders(filters);
+    },
+
+    async getPendientesOperario(): Promise<OrderSummaryDTO[]> {
+        const response = await api.get<OrderSummaryDTO[]>('/Orders/pendientes-operario');
+        return response.data;
+    },
+
+    async getPendientesCadete(): Promise<OrderSummaryDTO[]> {
+        const response = await api.get<OrderSummaryDTO[]>('/Orders/pendientes-cadete');
+        return response.data;
+    },
+
     async asignarOperario(data: AssignOperatorDTO): Promise<void> {
-        await api.patch('/orders/asignar-operario', data);
+        await api.patch('/Orders/asignar-operario', data);
     },
 
     async asignarCadete(data: AssignDeliveryDTO): Promise<void> {
-        await api.patch('/orders/asignar-cadete', data);
+        await api.patch('/Orders/asignar-cadete', data);
     },
 
     async cambiarEstado(data: ChangeOrderStatusDTO): Promise<void> {
         const payload = {
             IDPedido: data.idPedido,
             IDNuevoEstado: data.idNuevoEstado,
-            IDUsuario: data.idUsuario,
-            Observaciones: data.observaciones || "",
-            MotivoCancelacion: data.idNuevoEstado === 8 ? data.observaciones : null
+            IDUsuario: data.idUsuario
         };
-        await api.put(`/orders/${data.idPedido}/estado`, payload);
+        await api.put(`/Orders/${data.idPedido}/estado`, payload);
     },
 
-    async getPedidosByRol(rol: string, userId: number, otrosFiltros: any = {}): Promise<OrderSummaryDTO[]> {
-        let filters = { ...otrosFiltros };
-        if (rol === 'Operario' || rol === 'Cadete') {
-            filters.idUsuario = userId;
-        }
-        return this.getFilteredOrders(filters);
-    },
+    async createOrder(orderData: any): Promise<any> {
+        const response = await api.post('/Orders', orderData);
+        return response.data;
+    }
 };

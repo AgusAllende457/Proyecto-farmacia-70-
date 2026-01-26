@@ -8,19 +8,31 @@ interface OrderFiltersProps {
     onFilterChange: (filters: any) => void;
 }
 
+const STATUS_MAP: Record<string, number> = {
+    'Todos': 0,
+    'Sin preparar': 1,
+    'Preparar pedido': 2,
+    'Demorado': 3,
+    'Listo para despachar': 4,
+    'Despachando': 5,
+    'En camino': 6,
+    'Entregado': 7,
+    'Cancelado': 10
+};
+
 export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterChange }) => {
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [operarios, setOperarios] = useState<UserDTO[]>([]);
     const [cadetes, setCadetes] = useState<UserDTO[]>([]);
 
-    // Alineamos los nombres con el OrderFilterDTO de C#
     const [filters, setFilters] = useState({
-        search: '',           // Mapea a 'Search' en C#
-        estado: 'Todos',      // Se traduce a 'IDEstadoDePedido' en el Service
-        idOperario: '',       // Mapea a 'IDUsuario'
-        idCadete: '',         // Mapea a 'IDUsuario' (dependiendo del rol)
-        fechaDesde: '',       // Mapea a 'FechaDesde'
-        fechaHasta: ''        // Mapea a 'FechaHasta'
+        search: '',
+        estadoNombre: 'Todos',
+        idEstadoDePedido: 0,
+        idOperario: '',
+        idCadete: '',
+        fechaDesde: '',
+        fechaHasta: ''
     });
 
     useEffect(() => {
@@ -39,8 +51,13 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
         onFilterChange(updatedFilters);
     };
 
-    const handleStatusClick = (status: string) => {
-        const newFilters = { ...filters, estado: status };
+    const handleStatusClick = (statusName: string) => {
+        const statusId = STATUS_MAP[statusName] || 0;
+        const newFilters = { 
+            ...filters, 
+            estadoNombre: statusName, 
+            idEstadoDePedido: statusId 
+        };
         setFilters(newFilters);
         handleApplyFilters(newFilters);
     };
@@ -50,12 +67,20 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
         handleApplyFilters();
     };
 
-    const statuses = ['Todos', 'Sin preparar', 'Preparar pedido', 'Demorado', 'Listo para despachar', 'En camino', 'Entregado', 'Cancelado'];
+    // --- LÓGICA DE FILTRADO DE BOTONES SEGÚN ROL ---
+    const statuses = Object.keys(STATUS_MAP).filter(s => {
+        // Si es Operario, solo mostramos estos estados específicos
+        if (userRole === 'Operario') {
+            const allowed = ['Todos', 'Sin preparar', 'Preparar pedido', 'Demorado', 'Listo para despachar', 'Cancelado'];
+            return allowed.includes(s);
+        }
+        // Para otros roles, mantenemos la lógica anterior (quitar despachando y falla)
+        return s !== 'Despachando' && s !== 'Entrega fallida';
+    });
 
     return (
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                {/* Botones de Estado */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
                     {statuses.map(status => (
                         <button
@@ -63,7 +88,9 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
                             key={status}
                             onClick={() => handleStatusClick(status)}
                             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition
-                                ${filters.estado === status ? 'bg-blue-600 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                ${filters.estadoNombre === status 
+                                    ? 'bg-blue-600 text-white shadow-sm' 
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                         >
                             {status}
                         </button>
@@ -71,19 +98,21 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {/* Buscador Principal */}
                     <div className="relative flex-1 sm:w-64">
                         <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
                         <input 
                             type="text"
                             value={filters.search}
-                            onChange={(e) => setFilters({...filters, search: e.target.value})}
+                            onChange={(e) => {
+                                const nf = {...filters, search: e.target.value};
+                                setFilters(nf);
+                                handleApplyFilters(nf); 
+                            }}
                             placeholder="ID o Nombre de cliente..." 
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
                     
-                    {/* Botón Filtros Avanzados */}
                     {userRole === 'Administrador' && (
                         <button 
                             type="button" 
@@ -98,10 +127,8 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
                 </div>
             </div>
 
-            {/* Panel Avanzado */}
-            {showAdvanced && (
+            {showAdvanced && userRole === 'Administrador' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-gray-100">
-                    {/* Selector Operarios */}
                     <div className="flex flex-col gap-1">
                         <label className="text-xs font-semibold text-gray-500 flex items-center gap-1">
                             <UserCog size={14}/> OPERARIO
@@ -120,7 +147,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
                         </select>
                     </div>
 
-                    {/* Selector Cadetes */}
                     <div className="flex flex-col gap-1">
                         <label className="text-xs font-semibold text-gray-500 flex items-center gap-1">
                             <UserCheck size={14}/> CADETE
@@ -139,7 +165,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
                         </select>
                     </div>
 
-                    {/* Fecha Desde */}
                     <div className="flex flex-col gap-1">
                         <label className="text-xs font-semibold text-gray-500 flex items-center gap-1">
                             <Calendar size={14}/> DESDE
@@ -156,7 +181,6 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
                         />
                     </div>
 
-                    {/* Fecha Hasta */}
                     <div className="flex flex-col gap-1">
                         <label className="text-xs font-semibold text-gray-500 flex items-center gap-1">
                             <Calendar size={14}/> HASTA

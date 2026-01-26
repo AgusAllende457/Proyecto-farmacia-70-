@@ -28,9 +28,7 @@ namespace Back.Repositories
                 .AsNoTracking()
                 .AsQueryable();
 
-            // --- INICIO LÓGICA DE FILTRADO DINÁMICO ---
-
-            // NUEVO: Filtro de búsqueda por ID o Nombre de Cliente
+            // 1. Filtrado por Búsqueda (ID o Nombre de Cliente)
             if (!string.IsNullOrEmpty(filters.Search))
             {
                 string term = filters.Search.ToLower();
@@ -41,9 +39,11 @@ namespace Back.Repositories
                 );
             }
 
-            if (filters.IDEstadoDePedido.HasValue)
+            // 2. Filtrado por Estado (IDEstadoDePedido coincide con tu OrderFilterDTO)
+            if (filters.IDEstadoDePedido.HasValue && filters.IDEstadoDePedido.Value > 0)
                 query = query.Where(p => p.IDEstadoDePedido == filters.IDEstadoDePedido.Value);
 
+            // 3. Otros filtros (Usuario, Cliente y Fechas)
             if (filters.IDUsuario.HasValue)
                 query = query.Where(p => p.IDUsuario == filters.IDUsuario.Value);
 
@@ -56,16 +56,17 @@ namespace Back.Repositories
             if (filters.FechaHasta.HasValue)
                 query = query.Where(p => p.Fecha.Date <= filters.FechaHasta.Value.Date);
 
-            // --- FIN LÓGICA DE FILTRADO ---
-
+            // 4. Proyección al DTO de salida
             return await query
+                .OrderByDescending(p => p.Fecha) // Los más recientes primero
                 .Select(p => new OrderSummaryDTO
                 {
                     IDPedido = p.IDPedido,
                     Fecha = p.Fecha,
                     Total = p.Total,
+                    // ASIGNACIÓN FUNDAMENTAL PARA EL FRONT-END:
+                    IDEstadoDePedido = p.IDEstadoDePedido, 
                     EstadoNombre = p.EstadoDePedido != null ? p.EstadoDePedido.NombreEstado : "Sin Estado",
-                    // Concatenamos Nombre y Apellido para que se vea mejor en la tabla
                     ClienteNombre = p.Cliente != null ? $"{p.Cliente.Nombre} {p.Cliente.Apellido}" : "Sin Cliente",
                     ResponsableNombre = p.Usuario != null ? p.Usuario.Nombre : "Sin Asignar",
                     FechaEntregaEstimada = p.FechaEntregaEstimada,
@@ -83,7 +84,7 @@ namespace Back.Repositories
             pedido.IDEstadoDePedido = datos.IDNuevoEstado;
             pedido.IDUsuario = datos.IDUsuario;
 
-            // Si el estado es entregado (asumiendo ID 7 según tus DTOs anteriores)
+            // Registro de fecha real si el estado es Entregado (ID 7)
             if (datos.IDNuevoEstado == 7)
             {
                 pedido.FechaEntregaReal = DateTime.Now;
