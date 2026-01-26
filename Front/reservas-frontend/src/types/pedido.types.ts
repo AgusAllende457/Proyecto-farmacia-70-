@@ -4,6 +4,7 @@ export interface OrderSummaryDTO {
     fecha: string;
     total: number;
     estadoNombre: string;
+    idEstadoDePedido: number;
     clienteNombre: string;
     responsableNombre: string;
     fechaEntregaEstimada: string;
