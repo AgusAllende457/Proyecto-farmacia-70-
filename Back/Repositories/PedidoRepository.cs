@@ -1,7 +1,7 @@
-﻿using Back.Data;                     // Necesario para acceder a AppDbContext
-using Back.DTOs;                     // Necesario para los DTOs
-using Back.Models;                   // Necesario para las entidades
-using Microsoft.EntityFrameworkCore; // Necesario para .Include() y .ToListAsync()
+﻿using Back.Data;
+using Back.DTOs;
+using Back.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,6 @@ namespace Back.Repositories
 {
     public class PedidoRepository : IPedidoRepository
     {
-        // CAMBIO CLAVE: Usar AppDbContext en lugar de DbContext
         private readonly AppDbContext _context;
 
         public PedidoRepository(AppDbContext context)
@@ -22,15 +21,26 @@ namespace Back.Repositories
 
         public async Task<IEnumerable<OrderSummaryDTO>> GetFilteredOrdersAsync(OrderFilterDTO filters)
         {
-            // Ahora _context.Pedidos será reconocido correctamente
             var query = _context.Pedidos
                 .Include(p => p.Cliente)
                 .Include(p => p.EstadoDePedido)
                 .Include(p => p.Usuario)
-                .AsNoTracking() // Recomendado para consultas de solo lectura
+                .AsNoTracking()
                 .AsQueryable();
 
-            // Lógica de filtrado dinámico
+            // --- INICIO LÓGICA DE FILTRADO DINÁMICO ---
+
+            // NUEVO: Filtro de búsqueda por ID o Nombre de Cliente
+            if (!string.IsNullOrEmpty(filters.Search))
+            {
+                string term = filters.Search.ToLower();
+                query = query.Where(p =>
+                    p.IDPedido.ToString().Contains(term) ||
+                    (p.Cliente != null && p.Cliente.Nombre.ToLower().Contains(term)) ||
+                    (p.Cliente != null && p.Cliente.Apellido.ToLower().Contains(term))
+                );
+            }
+
             if (filters.IDEstadoDePedido.HasValue)
                 query = query.Where(p => p.IDEstadoDePedido == filters.IDEstadoDePedido.Value);
 
@@ -40,37 +50,54 @@ namespace Back.Repositories
             if (filters.IDCliente.HasValue)
                 query = query.Where(p => p.IDCliente == filters.IDCliente.Value);
 
-            // Filtrado por fechas (usando Date para ignorar la hora si es necesario)
             if (filters.FechaDesde.HasValue)
                 query = query.Where(p => p.Fecha.Date >= filters.FechaDesde.Value.Date);
 
             if (filters.FechaHasta.HasValue)
                 query = query.Where(p => p.Fecha.Date <= filters.FechaHasta.Value.Date);
 
-            // Proyección optimizada al DTO
+            // --- FIN LÓGICA DE FILTRADO ---
+
             return await query
                 .Select(p => new OrderSummaryDTO
                 {
                     IDPedido = p.IDPedido,
                     Fecha = p.Fecha,
                     Total = p.Total,
-                    // Usamos operadores condicionales por si alguna relación es nula
                     EstadoNombre = p.EstadoDePedido != null ? p.EstadoDePedido.NombreEstado : "Sin Estado",
-                    ClienteNombre = p.Cliente != null ? p.Cliente.Nombre : "Sin Cliente",
+                    // Concatenamos Nombre y Apellido para que se vea mejor en la tabla
+                    ClienteNombre = p.Cliente != null ? $"{p.Cliente.Nombre} {p.Cliente.Apellido}" : "Sin Cliente",
                     ResponsableNombre = p.Usuario != null ? p.Usuario.Nombre : "Sin Asignar",
                     FechaEntregaEstimada = p.FechaEntregaEstimada,
                     FechaEntregaReal = p.FechaEntregaReal
                 })
                 .ToListAsync();
         }
-        // Dentro de PedidoRepository.cs
+
         public async Task<bool> ActualizarEstadoPedidoAsync(ChangeOrderStatusDTO datos)
         {
-         // Ejemplo si usas Dapper o SQL puro:
-         // 1. Update de la tabla Pedidos (cambia el IDEstado y el IDUsuario que lo tomó)
-         // 2. Insert en HistorialDeEstados (para la trazabilidad de Agustina)
-        // Por ahora, para que el Service deje de dar error, podés poner:
-        return true; // (Luego lo completamos con tu lógica real de DB)
+            var pedido = await _context.Pedidos.FindAsync(datos.IDPedido);
+            if (pedido == null) return false;
+
+            // Actualizamos el estado y el usuario responsable
+            pedido.IDEstadoDePedido = datos.IDNuevoEstado;
+            pedido.IDUsuario = datos.IDUsuario;
+
+            // Si el estado es entregado (asumiendo ID 7 según tus DTOs anteriores)
+            if (datos.IDNuevoEstado == 7)
+            {
+                pedido.FechaEntregaReal = DateTime.Now;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

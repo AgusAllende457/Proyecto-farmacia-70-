@@ -1,4 +1,5 @@
 export interface OrderSummaryDTO {
+    operarioNombre: string;
     idPedido: number;
     fecha: string;
     total: number;
@@ -43,6 +44,8 @@ export interface ChangeOrderStatusDTO {
 }
 
 export interface OrderFilterDTO {
+    estado: boolean;
+    search: any;
     idEstadoDePedido?: number;
     idUsuario?: number;
     idCliente?: number;
