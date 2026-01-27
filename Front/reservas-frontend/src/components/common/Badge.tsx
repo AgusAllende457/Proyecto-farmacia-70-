@@ -1,6 +1,7 @@
 import React from 'react';
 
-interface BadgeProps {
+// 1. Extendemos los atributos estándar de HTML para un span
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
     children: React.ReactNode;
     variant?: 'default' | 'success' | 'warning' | 'danger' | 'info';
     size?: 'sm' | 'md';
@@ -9,7 +10,9 @@ interface BadgeProps {
 export const Badge: React.FC<BadgeProps> = ({ 
     children, 
     variant = 'default',
-    size = 'md' 
+    size = 'md',
+    className = '', // 2. Recibimos className (con valor por defecto vacío)
+    ...props        // 3. Capturamos el resto de props (onClick, id, etc.)
 }) => {
     const variantClasses = {
         default: 'bg-gray-100 text-gray-800',
@@ -25,7 +28,11 @@ export const Badge: React.FC<BadgeProps> = ({
     };
 
     return (
-        <span className={`inline-flex items-center font-medium rounded-full ${variantClasses[variant]} ${sizeClasses[size]}`}>
+        <span 
+            // 4. Inyectamos className al final de la lista
+            className={`inline-flex items-center font-medium rounded-full ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+            {...props} // 5. Pasamos el resto de propiedades al elemento DOM
+        >
             {children}
         </span>
     );

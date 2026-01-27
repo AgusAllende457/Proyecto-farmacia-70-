@@ -2,78 +2,87 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@context/AuthContext';
 import {
-  LayoutDashboard,
-  Package,
-  Users,
-  MapPin,
-  BarChart3,
-  ClipboardList,
-  FileText,
+    LayoutDashboard,
+    Package,
+    Users,
+    MapPin,
+    BarChart3,
+    ClipboardList,
+    FileText,
+    LucideIcon
 } from 'lucide-react';
 
 interface SidebarProps {
-  isOpen: boolean;
+    isOpen: boolean;
 }
 
+interface MenuItem {
+    path: string;
+    icon: LucideIcon;
+    label: string;
+}
+
+type UserRole = 'Administrador' | 'Operario' | 'Cadete';
+
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
-  const { user } = useAuth();
+    const { user } = useAuth();
 
-  // Menú según rol (RF8)
-  const menuItems = {
-    Administrador: [
-      { path: '/dashboard/admin', icon: LayoutDashboard, label: 'Dashboard' },
-      { path: '/pedidos', icon: Package, label: 'Gestión de Pedidos' },
-      { path: '/asignar-operario', icon: Users, label: 'Asignar Operarios' },
-      { path: '/asignar-cadete', icon: MapPin, label: 'Asignar Cadetes' },
-      { path: '/seguimiento', icon: ClipboardList, label: 'Seguimiento' },
-      { path: '/reportes', icon: BarChart3, label: 'Reportes' },
-      { path: '/usuarios', icon: Users, label: 'Usuarios' },
-    ],
-    Operario: [
-      { path: '/dashboard/operario', icon: LayoutDashboard, label: 'Dashboard' },
-      { path: '/mis-pedidos', icon: Package, label: 'Mis Pedidos' }
-      
-    ],
-    Cadete: [
-      { path: '/dashboard/cadete', icon: LayoutDashboard, label: 'Dashboard' },
-      { path: '/entregas', icon: MapPin, label: 'Mis Entregas' },
-      { path: '/intentos-fallidos', icon: FileText, label: 'Entregas Fallidas' },
-    ],
-  };
+    const menuItems: Record<UserRole, MenuItem[]> = {
+        Administrador: [
+            { path: '/dashboard/admin', icon: LayoutDashboard, label: 'Dashboard' },
+            { path: '/pedidos', icon: Package, label: 'Gestión de Pedidos' },
+            { path: '/asignar-operario', icon: Users, label: 'Asignar Operarios' },
+            { path: '/asignar-cadete', icon: MapPin, label: 'Asignar Cadetes' },
+            { path: '/seguimiento', icon: ClipboardList, label: 'Seguimiento' },
+            { path: '/reportes', icon: BarChart3, label: 'Reportes' },
+            { path: '/usuarios', icon: Users, label: 'Usuarios' },
+        ],
+        Operario: [
+            { path: '/dashboard/operario', icon: LayoutDashboard, label: 'Dashboard' },
+            { path: '/mis-pedidos', icon: Package, label: 'Mis Pedidos' },
+        ],
+        Cadete: [
+            { path: '/dashboard/cadete', icon: LayoutDashboard, label: 'Dashboard' },
+            { path: '/entregas', icon: MapPin, label: 'Mis Entregas' },
+            { path: '/intentos-fallidos', icon: FileText, label: 'Entregas Fallidas' },
+        ],
+    };
 
-  const currentMenu = user ? menuItems[user.rol] : [];
+    const userRole = (user?.rol as UserRole) || 'Administrador';
+    const currentMenu = menuItems[userRole] || [];
 
-  if (!isOpen) return null;
+    // En pantallas grandes (lg) siempre mostramos el sidebar, en móviles depende de isOpen
+    const visibilityClass = isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0';
 
-  return (
-    <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-200 overflow-y-auto">
-      <nav className="p-4 space-y-1">
-        {currentMenu.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                isActive
-                  ? 'bg-blue-50 text-blue-600 font-medium'
-                  : 'text-gray-700 hover:bg-gray-50'
-              }`
-            }
-          >
-            <item.icon className="w-5 h-5" />
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
-      </nav>
+    return (
+        <aside 
+            className={`fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-200 overflow-y-auto z-40 transition-transform duration-300 ease-in-out ${visibilityClass}`}
+        >
+            <nav className="p-4 space-y-2">
+                {currentMenu.map((item) => (
+                    <NavLink
+                        key={item.path}
+                        to={item.path}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium ${
+                                isActive
+                                    ? 'bg-blue-600 text-white shadow-md shadow-blue-200' // Estilo activo sólido como en la imagen
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
+                            }`
+                        }
+                    >
+                        <item.icon className="w-5 h-5" />
+                        <span>{item.label}</span>
+                    </NavLink>
+                ))}
+            </nav>
 
-      {/* Info de la Sucursal */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-gray-50">
-        <div className="text-xs text-gray-600">
-          <p className="font-medium">Sucursal:</p>
-          <p>{user?.nombreSucursal}</p>
-        </div>
-      </div>
-    </aside>
-  );
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gray-50 border-t border-gray-100">
+                <div className="flex items-center gap-2 text-gray-500 text-xs">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <p>Sistema Online</p>
+                </div>
+            </div>
+        </aside>
+    );
 };
-
