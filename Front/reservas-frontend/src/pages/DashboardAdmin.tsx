@@ -18,7 +18,8 @@ import {
     Users,
     Truck,
     Eye,
-    Plus
+    Plus,
+    Clock
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,7 +53,6 @@ export const DashboardAdmin: React.FC = () => {
             
             setStats({
                 activos: data.filter(p => !['Entregado', 'Cancelado'].includes(p.estadoNombre)).length,
-                // Nota: Asegúrate que en tu pedido.types.ts coincida el casing (estaDemorado o EstaDemorado)
                 demorados: data.filter(p => p.estaDemorado || (p as any).EstaDemorado).length,
                 entregados: data.filter(p => p.estadoNombre === 'Entregado').length,
                 cancelados: data.filter(p => p.estadoNombre === 'Cancelado').length,
@@ -64,137 +64,228 @@ export const DashboardAdmin: React.FC = () => {
         }
     };
 
+    // Función auxiliar para obtener iniciales
+    const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    // Función auxiliar para color de avatar aleatorio (fijo por nombre)
+    const getAvatarColor = (name: string) => {
+        const colors = ['bg-blue-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-teal-500'];
+        const index = name.length % colors.length;
+        return colors[index];
+    };
+
     return (
         <DashboardLayout>
-            <div className="space-y-6">
-                <div className="flex justify-between items-start">
+            <div className="space-y-8 font-sans">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Bienvenido, {user?.nombreCompleto}</h1>
-                        <p className="text-gray-600 mt-1">Panel de Administración - {user?.nombreSucursal}</p>
+                        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Bienvenido, {user?.nombreCompleto?.split(' ')[0]}</h1>
+                        <p className="text-gray-500 mt-1 text-sm">Panel de Administración - {user?.nombreSucursal}</p>
                     </div>
-                    <Button onClick={() => navigate('/pedidos/nuevo')} className="flex items-center gap-2">
+                    <Button onClick={() => navigate('/pedidos/nuevo')} className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2.5 rounded-lg shadow-lg shadow-blue-500/20 flex items-center gap-2 transition-all">
                         <Plus size={20} /> Nuevo Pedido
                     </Button>
                 </div>
 
-                {/* Estadísticas */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <Card>
-                        <div className="flex items-center justify-between">
-                            <div><p className="text-sm text-gray-600">Activos</p><p className="text-2xl font-bold">{stats.activos}</p></div>
-                            <Package className="text-blue-600"/>
+                {/* Estadísticas - Estilo Bordeado (Outline) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {/* Activos - Azul */}
+                    <div className="bg-white border-2 border-blue-500 rounded-2xl p-6 shadow-sm relative overflow-hidden group transition-all hover:shadow-md">
+                        <div className="relative z-10">
+                            <p className="text-blue-600 text-sm font-medium mb-1">Activos</p>
+                            <h3 className="text-4xl font-bold mb-2 text-blue-900">{stats.activos}</h3>
+                            <p className="text-gray-500 text-xs">En proceso actualmente</p>
                         </div>
-                    </Card>
-                    <Card>
-                        <div className="flex items-center justify-between">
-                            <div><p className="text-sm text-gray-600">Demorados</p><p className="text-2xl font-bold text-yellow-600">{stats.demorados}</p></div>
-                            <AlertTriangle className="text-yellow-600"/>
+                        <div className="absolute right-4 top-4 bg-blue-100/50 p-3 rounded-xl backdrop-blur-sm">
+                            <Package className="w-6 h-6 text-blue-600" />
                         </div>
-                    </Card>
-                    <Card>
-                        <div className="flex items-center justify-between">
-                            <div><p className="text-sm text-gray-600">Entregados</p><p className="text-2xl font-bold">{stats.entregados}</p></div>
-                            <CheckCircle className="text-green-600"/>
+                    </div>
+
+                    {/* Demorados - Naranja */}
+                    <div className="bg-white border-2 border-orange-500 rounded-2xl p-6 shadow-sm relative overflow-hidden group transition-all hover:shadow-md">
+                        <div className="relative z-10">
+                            <p className="text-orange-600 text-sm font-medium mb-1">Demorados</p>
+                            <h3 className="text-4xl font-bold mb-2 text-orange-900">{stats.demorados}</h3>
+                            <p className="text-gray-500 text-xs">Requieren atención</p>
                         </div>
-                    </Card>
-                    <Card>
-                        <div className="flex items-center justify-between">
-                            <div><p className="text-sm text-gray-600">Cancelados</p><p className="text-2xl font-bold">{stats.cancelados}</p></div>
-                            <XCircle className="text-red-600"/>
+                        <div className="absolute right-4 top-4 bg-orange-100/50 p-3 rounded-xl backdrop-blur-sm">
+                            <AlertTriangle className="w-6 h-6 text-orange-600" />
                         </div>
-                    </Card>
+                    </div>
+
+                    {/* Entregados - Verde */}
+                    <div className="bg-white border-2 border-emerald-500 rounded-2xl p-6 shadow-sm relative overflow-hidden group transition-all hover:shadow-md">
+                        <div className="relative z-10">
+                            <p className="text-emerald-600 text-sm font-medium mb-1">Entregados</p>
+                            <h3 className="text-4xl font-bold mb-2 text-emerald-900">{stats.entregados}</h3>
+                            <p className="text-gray-500 text-xs">Completados hoy</p>
+                        </div>
+                        <div className="absolute right-4 top-4 bg-emerald-100/50 p-3 rounded-xl backdrop-blur-sm">
+                            <CheckCircle className="w-6 h-6 text-emerald-600" />
+                        </div>
+                    </div>
+
+                    {/* Cancelados - Rojo */}
+                    <div className="bg-white border-2 border-red-500 rounded-2xl p-6 shadow-sm relative overflow-hidden group transition-all hover:shadow-md">
+                        <div className="relative z-10">
+                            <p className="text-red-600 text-sm font-medium mb-1">Cancelados</p>
+                            <h3 className="text-4xl font-bold mb-2 text-red-900">{stats.cancelados}</h3>
+                            <p className="text-gray-500 text-xs">Este mes</p>
+                        </div>
+                        <div className="absolute right-4 top-4 bg-red-100/50 p-3 rounded-xl backdrop-blur-sm">
+                            <XCircle className="w-6 h-6 text-red-600" />
+                        </div>
+                    </div>
                 </div>
 
-                <OrderFilters 
-                    userRole="Administrador" 
-                    onFilterChange={(filtros) => loadDashboardData(filtros)} 
-                />
+                {/* Filtros */}
+                <div className="bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
+                    <OrderFilters 
+                        userRole="Administrador" 
+                        onFilterChange={(filtros) => loadDashboardData(filtros)} 
+                    />
+                </div>
 
                 {loading ? (
-                    <div className="flex items-center justify-center h-32">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <div className="flex items-center justify-center h-48">
+                        <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-blue-600"></div>
                     </div>
                 ) : (
                     <>
+                        {/* Tarjetas de Acción Rápida (Estilo Split) */}
                         <div className="grid lg:grid-cols-2 gap-6">
-                            {/* Columna: Pendientes de Operario */}
-                            <Card>
-                                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><Users className="w-5 h-5" /> Pendientes de Operario</h2>
+                            {/* Pendientes de Operario */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-blue-100 p-3 rounded-full text-blue-600">
+                                            <Clock size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-800">Pendientes de Operario</h3>
+                                            <p className="text-sm text-gray-500">
+                                                {pedidos.filter(p => p.estadoNombre === 'Sin preparar').length} pedidos en espera
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <Badge variant="info">{pedidos.filter(p => p.estadoNombre === 'Sin preparar').length}</Badge>
+                                </div>
+                                
                                 <div className="space-y-3">
-                                    {pedidos.filter(p => p.estadoNombre === 'Sin preparar').length > 0 ? (
-                                        pedidos.filter(p => p.estadoNombre === 'Sin preparar').map((pedido) => (
-                                            <div key={pedido.idPedido} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
-                                                <div><p className="font-medium">#{pedido.idPedido}</p><p className="text-sm text-gray-500">{pedido.clienteNombre}</p></div>
-                                                <div className="flex gap-2">
-                                                    <button onClick={() => { setSelectedPedidoDetalle(pedido); setModalDetalleOpen(true); }} className="p-2 text-gray-400 hover:text-blue-600 transition-colors"><Eye className="w-5 h-5"/></button>
-                                                    <Button size="sm" onClick={() => { setSelectedPedido(pedido); setModalOpen(true); }}>Asignar</Button>
+                                    {pedidos.filter(p => p.estadoNombre === 'Sin preparar').slice(0, 3).map((pedido) => (
+                                        <div key={pedido.idPedido} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-blue-50/50 transition-colors border border-gray-100">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 text-xs font-bold">
+                                                    #{pedido.idPedido}
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-gray-800 text-sm">{pedido.clienteNombre}</p>
+                                                    <p className="text-xs text-gray-500">Sin preparar</p>
                                                 </div>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <p className="text-gray-500 text-sm italic">No hay pedidos para asignar operario.</p>
+                                            <Button 
+                                                size="sm" 
+                                                className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg px-4"
+                                                onClick={() => { setSelectedPedido(pedido); setModalOpen(true); }}
+                                            >
+                                                <Eye className="w-4 h-4 mr-2" /> Asignar
+                                            </Button>
+                                        </div>
+                                    ))}
+                                    {pedidos.filter(p => p.estadoNombre === 'Sin preparar').length === 0 && (
+                                        <div className="text-center py-8 text-gray-400 text-sm">Todo al día. No hay pedidos pendientes.</div>
                                     )}
                                 </div>
-                            </Card>
+                            </div>
                             
-                            {/* Columna: Listos para Cadete (EL BOTÓN QUE SOLICITASTE) */}
-                            <Card>
-                                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><Truck className="w-5 h-5" /> Listos para Cadete</h2>
+                            {/* Listos para Cadete */}
+                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-yellow-100 p-3 rounded-full text-yellow-600">
+                                            <Package size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-800">Listos para Cadete</h3>
+                                            <p className="text-sm text-gray-500">
+                                                {pedidos.filter(p => p.estadoNombre === 'Listo para despachar').length} pedidos para despacho
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <Badge variant="warning">{pedidos.filter(p => p.estadoNombre === 'Listo para despachar').length}</Badge>
+                                </div>
+
                                 <div className="space-y-3">
-                                    {pedidos.filter(p => p.estadoNombre === 'Listo para despachar').length > 0 ? (
-                                        pedidos.filter(p => p.estadoNombre === 'Listo para despachar').map((pedido) => (
-                                            <div key={pedido.idPedido} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
-                                                <div><p className="font-medium">#{pedido.idPedido}</p><p className="text-sm text-gray-500">{pedido.clienteNombre}</p></div>
-                                                <div className="flex gap-2">
-                                                    <button onClick={() => { setSelectedPedidoDetalle(pedido); setModalDetalleOpen(true); }} className="p-2 text-gray-400 hover:text-blue-600 transition-colors"><Eye className="w-5 h-5"/></button>
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="success" 
-                                                        onClick={() => { setSelectedPedidoCadete(pedido); setModalCadeteOpen(true); }}
-                                                    >
-                                                        Asignar Cadete
-                                                    </Button>
+                                    {pedidos.filter(p => p.estadoNombre === 'Listo para despachar').slice(0, 3).map((pedido) => (
+                                        <div key={pedido.idPedido} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-yellow-50/50 transition-colors border border-gray-100">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-yellow-200 flex items-center justify-center text-yellow-800 text-xs font-bold">
+                                                    #{pedido.idPedido}
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-gray-800 text-sm">{pedido.clienteNombre}</p>
+                                                    <p className="text-xs text-yellow-600 font-medium">Listo para despachar</p>
                                                 </div>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <p className="text-gray-500 text-sm italic">No hay pedidos listos para despacho.</p>
+                                            <Button 
+                                                size="sm" 
+                                                className="bg-green-600 text-white hover:bg-green-700 rounded-lg px-4 shadow-sm"
+                                                onClick={() => { setSelectedPedidoCadete(pedido); setModalCadeteOpen(true); }}
+                                            >
+                                                <Truck className="w-4 h-4 mr-2" /> Asignar Cadete
+                                            </Button>
+                                        </div>
+                                    ))}
+                                    {pedidos.filter(p => p.estadoNombre === 'Listo para despachar').length === 0 && (
+                                        <div className="text-center py-8 text-gray-400 text-sm">No hay pedidos listos para despacho.</div>
                                     )}
                                 </div>
-                            </Card>
+                            </div>
                         </div>
 
-                        {/* Tabla General */}
-                        <Card>
-                            <h2 className="text-xl font-semibold mb-4">Todos los Pedidos</h2>
+                        {/* Tabla General Estilo Imagen */}
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div className="p-6 bg-blue-600 text-white">
+                                <h2 className="text-lg font-bold">Todos los Pedidos</h2>
+                                <p className="text-blue-100 text-sm">Gestiona y monitorea todos los pedidos en tiempo real</p>
+                            </div>
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left">
-                                    <thead className="bg-gray-50 text-sm">
+                                <table className="w-full text-left border-collapse">
+                                    <thead className="bg-gray-50 text-xs uppercase text-gray-500 font-semibold">
                                         <tr>
-                                            <th className="p-3 font-semibold text-gray-600">ID</th>
-                                            <th className="p-3 font-semibold text-gray-600">Cliente</th>
-                                            <th className="p-3 font-semibold text-gray-600">Responsable</th>
-                                            <th className="p-3 font-semibold text-gray-600">Estado</th>
-                                            <th className="p-3 text-right font-semibold text-gray-600">Acciones</th>
+                                            <th className="p-5">ID</th>
+                                            <th className="p-5">Cliente</th>
+                                            <th className="p-5">Responsable</th>
+                                            <th className="p-5">Estado</th>
+                                            <th className="p-5 text-right">Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-gray-100">
                                         {pedidos.map((pedido) => (
-                                            <tr key={pedido.idPedido} className="border-t hover:bg-gray-50 transition-colors">
-                                                <td className="p-3">#{pedido.idPedido}</td>
-                                                <td className="p-3 font-medium text-gray-800">{pedido.clienteNombre}</td>
-                                                <td className="p-3 text-sm text-gray-500">{pedido.responsableNombre || 'No asignado'}</td>
-                                                <td className="p-3">
+                                            <tr key={pedido.idPedido} className="hover:bg-blue-50/30 transition-colors group">
+                                                <td className="p-5 font-bold text-gray-700">#{pedido.idPedido}</td>
+                                                <td className="p-5">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-10 h-10 rounded-full ${getAvatarColor(pedido.clienteNombre)} text-white flex items-center justify-center font-bold text-sm shadow-sm`}>
+                                                            {getInitials(pedido.clienteNombre)}
+                                                        </div>
+                                                        <span className="font-medium text-gray-800">{pedido.clienteNombre}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="p-5 text-sm text-gray-500">
+                                                    {pedido.responsableNombre || <span className="text-gray-400 italic">Sin asignar</span>}
+                                                </td>
+                                                <td className="p-5">
                                                     <Badge variant={(pedido.estaDemorado || (pedido as any).EstaDemorado) ? 'warning' : 'info'}>
                                                         {pedido.estadoNombre}
                                                     </Badge>
                                                 </td>
-                                                <td className="p-3 text-right">
+                                                <td className="p-5 text-right">
                                                     <button 
                                                         onClick={() => { setSelectedPedidoDetalle(pedido); setModalDetalleOpen(true); }} 
-                                                        className="text-blue-600 font-bold text-sm hover:underline"
+                                                        className="text-gray-400 hover:text-blue-600 font-medium text-sm flex items-center justify-end gap-2 ml-auto transition-colors"
                                                     >
-                                                        Ver detalles
+                                                        <Eye className="w-4 h-4" /> Ver detalles
                                                     </button>
                                                 </td>
                                             </tr>
@@ -202,7 +293,7 @@ export const DashboardAdmin: React.FC = () => {
                                     </tbody>
                                 </table>
                             </div>
-                        </Card>
+                        </div>
                     </>
                 )}
             </div>

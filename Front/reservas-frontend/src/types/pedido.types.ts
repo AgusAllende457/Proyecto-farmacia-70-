@@ -45,8 +45,8 @@ export interface ChangeOrderStatusDTO {
 }
 
 export interface OrderFilterDTO {
-    estado: boolean;
-    search: any;
+    estado?: boolean;      // <--- Agregado el ?
+    search?: any;          // <--- Agregado el ?
     idEstadoDePedido?: number;
     idUsuario?: number;
     idCliente?: number;
