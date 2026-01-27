@@ -3,7 +3,7 @@ import { useAuth } from '@context/AuthContext';
 import { Button } from '@components/common/Button';
 import { Input } from '@components/common/Input';
 import { Alert } from '@components/common/Alert';
-import { Lock, User } from 'lucide-react'; // Quitamos Pill ya que usaremos la imagen
+import { Lock, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const Login: React.FC = () => {
@@ -44,18 +44,10 @@ export const Login: React.FC = () => {
             localStorage.setItem('farmacia_role', selectedRole);
 
             switch (selectedRole) {
-                case 'Administrador':
-                    navigate('/dashboard/admin');
-                    break;
-                case 'Operario':
-                    navigate('/dashboard/operario');
-                    break;
-                case 'Cadete':
-                    navigate('/dashboard/cadete');
-                    break;
-                default:
-                    navigate('/'); 
-                    break;
+                case 'Administrador': navigate('/dashboard/admin'); break;
+                case 'Operario': navigate('/dashboard/operario'); break;
+                case 'Cadete': navigate('/dashboard/cadete'); break;
+                default: navigate('/'); break;
             }
         } catch (err: any) {
             setError(err.response?.data?.message || 'Usuario o contraseña incorrectos');
@@ -68,13 +60,15 @@ export const Login: React.FC = () => {
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    {/* --- CONTENEDOR DEL LOGO --- */}
+                    {/* --- LOGO CIRCULAR --- */}
                     <div className="inline-flex items-center justify-center mb-4">
-                        <img 
-                            src="/Logofarmacia.png" 
-                            alt="Logo Farmacia General Paz" 
-                            className="w-32 h-32 object-contain drop-shadow-md"
-                        />
+                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white flex items-center justify-center">
+                            <img 
+                                src="/Logofarmacia.png" 
+                                alt="Logo Farmacia General Paz" 
+                                className="w-full h-full object-cover" 
+                            />
+                        </div>
                     </div>
                     {/* ---------------------------- */}
                     
@@ -90,9 +84,12 @@ export const Login: React.FC = () => {
                     </h2>
 
                     <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                        {/* --- TEXTO CENTRADO --- */}
+                        <label className="block text-sm font-medium text-gray-700 mb-4 text-center">
                             Seleccione el tipo de usuario
                         </label>
+                        {/* ----------------------- */}
+                        
                         <div className="grid grid-cols-1 gap-3">
                             {roles.map((role) => (
                                 <button
@@ -101,8 +98,8 @@ export const Login: React.FC = () => {
                                     onClick={() => setSelectedRole(role.value)}
                                     className={`p-4 rounded-lg border-2 transition-all ${
                                         selectedRole === role.value
-                                            ? `${role.color} text-white border-transparent`
-                                            : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                                            ? `${role.color} text-white border-transparent shadow-md scale-[1.02]`
+                                            : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300'
                                     }`}
                                 >
                                     <span className="font-medium">{role.label}</span>
@@ -112,12 +109,8 @@ export const Login: React.FC = () => {
                     </div>
 
                     {selectedRole && (
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            {error && (
-                                <Alert type="error">
-                                    {error}
-                                </Alert>
-                            )}
+                        <form onSubmit={handleSubmit} className="space-y-4 animate-in fade-in duration-500">
+                            {error && <Alert type="error">{error}</Alert>}
 
                             <div className="relative">
                                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />

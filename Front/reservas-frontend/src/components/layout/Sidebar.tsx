@@ -32,6 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     Operario: [
       { path: '/dashboard/operario', icon: LayoutDashboard, label: 'Dashboard' },
       { path: '/mis-pedidos', icon: Package, label: 'Mis Pedidos' }
+      
     ],
     Cadete: [
       { path: '/dashboard/cadete', icon: LayoutDashboard, label: 'Dashboard' },
@@ -40,30 +41,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     ],
   };
 
-  // Verificación de seguridad para el rol
-  const currentMenu = user && menuItems[user.rol as keyof typeof menuItems] 
-    ? menuItems[user.rol as keyof typeof menuItems] 
-    : [];
+  const currentMenu = user ? menuItems[user.rol] : [];
 
   if (!isOpen) return null;
 
   return (
-    <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-200 overflow-y-auto flex flex-col">
-      
-      {/* --- SECCIÓN DEL LOGO --- */}
-      <div className="p-6 flex flex-col items-center border-b border-gray-100">
-        <img 
-          src="/Logofarmacia.png" 
-          alt="Logo Farmacia" 
-          className="w-20 h-20 object-contain mb-2"
-        />
-        <span className="text-xs font-bold text-blue-600 tracking-widest uppercase">
-          General Paz
-        </span>
-      </div>
-      {/* ------------------------ */}
-
-      <nav className="p-4 space-y-1 flex-1">
+    <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-200 overflow-y-auto">
+      <nav className="p-4 space-y-1">
         {currentMenu.map((item) => (
           <NavLink
             key={item.path}
@@ -83,15 +67,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       </nav>
 
       {/* Info de la Sucursal */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
-        <div className="text-xs text-gray-600 flex flex-col gap-1">
-          <p className="font-semibold text-gray-400 uppercase tracking-tighter text-[10px]">Sucursal activa</p>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-3 h-3 text-blue-500" />
-            <p className="font-medium text-gray-800">{user?.nombreSucursal || 'No asignada'}</p>
-          </div>
+      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-gray-50">
+        <div className="text-xs text-gray-600">
+          <p className="font-medium">Sucursal:</p>
+          <p>{user?.nombreSucursal}</p>
         </div>
       </div>
     </aside>
   );
 };
+
