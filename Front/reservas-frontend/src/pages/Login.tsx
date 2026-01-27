@@ -3,7 +3,7 @@ import { useAuth } from '@context/AuthContext';
 import { Button } from '@components/common/Button';
 import { Input } from '@components/common/Input';
 import { Alert } from '@components/common/Alert';
-import { Pill, Lock, User } from 'lucide-react';
+import { Lock, User } from 'lucide-react'; // Quitamos Pill ya que usaremos la imagen
 import { useNavigate } from 'react-router-dom';
 
 export const Login: React.FC = () => {
@@ -41,11 +41,8 @@ export const Login: React.FC = () => {
 
         try {
             await login(formData.usuario, formData.password);
-            
-            // Guardamos el rol antes de navegar
             localStorage.setItem('farmacia_role', selectedRole);
 
-            // ✅ Lógica de redirección basada en tus rutas definidas
             switch (selectedRole) {
                 case 'Administrador':
                     navigate('/dashboard/admin');
@@ -57,11 +54,9 @@ export const Login: React.FC = () => {
                     navigate('/dashboard/cadete');
                     break;
                 default:
-                    // Por seguridad, si el rol no coincide, lo mandamos al home o mostramos error
                     navigate('/'); 
                     break;
             }
-
         } catch (err: any) {
             setError(err.response?.data?.message || 'Usuario o contraseña incorrectos');
         } finally {
@@ -73,9 +68,16 @@ export const Login: React.FC = () => {
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-                        <Pill className="w-8 h-8 text-white" />
+                    {/* --- CONTENEDOR DEL LOGO --- */}
+                    <div className="inline-flex items-center justify-center mb-4">
+                        <img 
+                            src="/Logofarmacia.png" 
+                            alt="Logo Farmacia General Paz" 
+                            className="w-32 h-32 object-contain drop-shadow-md"
+                        />
                     </div>
+                    {/* ---------------------------- */}
+                    
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">
                         Farmacia General Paz
                     </h1>
