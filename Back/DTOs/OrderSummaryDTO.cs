@@ -5,12 +5,13 @@
     public decimal Total { get; set; }
 
     public int IDEstadoDePedido { get; set; }
-    public string EstadoNombre { get; set; } = string.Empty; // Desde EstadoDePedido.Nombre
-    public string ClienteNombre { get; set; } = string.Empty; // Desde Cliente.Nombre
-    public string ResponsableNombre { get; set; } = string.Empty; // Desde Usuario.Nombre
+    public string EstadoNombre { get; set; } = string.Empty;
+    public string ClienteNombre { get; set; } = string.Empty;
+    public string ResponsableNombre { get; set; } = string.Empty;
 
-    // Para el RF14 (Alertas de tiempo)
     public DateTime FechaEntregaEstimada { get; set; }
-    public bool EstaDemorado => DateTime.Now > FechaEntregaEstimada && string.IsNullOrEmpty(FechaEntregaReal.ToString());
     public DateTime? FechaEntregaReal { get; set; }
+    
+    // Cambiado: Ahora permite set para que el Repository pueda asignar el valor
+    public bool EstaDemorado { get; set; }
 }

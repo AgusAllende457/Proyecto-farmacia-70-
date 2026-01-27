@@ -21,6 +21,7 @@ namespace Back.Repositories
 
         public async Task<IEnumerable<OrderSummaryDTO>> GetFilteredOrdersAsync(OrderFilterDTO filters)
         {
+            // Iniciamos la base de la consulta con todas las relaciones necesarias
             var query = _context.Pedidos
                 .Include(p => p.Cliente)
                 .Include(p => p.EstadoDePedido)
@@ -28,8 +29,8 @@ namespace Back.Repositories
                 .AsNoTracking()
                 .AsQueryable();
 
-            // 1. Filtrado por Búsqueda (ID o Nombre de Cliente)
-            if (!string.IsNullOrEmpty(filters.Search))
+            // 1. Filtrado por Búsqueda (ID o Nombre/Apellido de Cliente)
+            if (!string.IsNullOrWhiteSpace(filters.Search))
             {
                 string term = filters.Search.ToLower();
                 query = query.Where(p =>
@@ -39,32 +40,46 @@ namespace Back.Repositories
                 );
             }
 
-            // 2. Filtrado por Estado (IDEstadoDePedido coincide con tu OrderFilterDTO)
+            // 2. Filtrado por Estado
             if (filters.IDEstadoDePedido.HasValue && filters.IDEstadoDePedido.Value > 0)
+            {
                 query = query.Where(p => p.IDEstadoDePedido == filters.IDEstadoDePedido.Value);
+            }
 
-            // 3. Otros filtros (Usuario, Cliente y Fechas)
-            if (filters.IDUsuario.HasValue)
+            // 3. Filtrado por Usuario (Responsable: Operario o Cadete)
+            if (filters.IDUsuario.HasValue && filters.IDUsuario.Value > 0)
+            {
                 query = query.Where(p => p.IDUsuario == filters.IDUsuario.Value);
+            }
 
-            if (filters.IDCliente.HasValue)
+            // 4. Filtrado por Cliente específico
+            if (filters.IDCliente.HasValue && filters.IDCliente.Value > 0)
+            {
                 query = query.Where(p => p.IDCliente == filters.IDCliente.Value);
+            }
 
+            // 5. Filtrado por rango de fechas
             if (filters.FechaDesde.HasValue)
-                query = query.Where(p => p.Fecha.Date >= filters.FechaDesde.Value.Date);
+            {
+                var desde = filters.FechaDesde.Value.Date;
+                query = query.Where(p => p.Fecha.Date >= desde);
+            }
 
             if (filters.FechaHasta.HasValue)
-                query = query.Where(p => p.Fecha.Date <= filters.FechaHasta.Value.Date);
+            {
+                var hasta = filters.FechaHasta.Value.Date;
+                query = query.Where(p => p.Fecha.Date <= hasta);
+            }
 
-            // 4. Proyección al DTO de salida
+            // 6. Proyección y ejecución de la consulta
+            // NOTA: No incluimos 'EstaDemorado' aquí porque el DTO lo calcula automáticamente
             return await query
-                .OrderByDescending(p => p.Fecha) // Los más recientes primero
+                .OrderByDescending(p => p.Fecha)
                 .Select(p => new OrderSummaryDTO
                 {
                     IDPedido = p.IDPedido,
                     Fecha = p.Fecha,
                     Total = p.Total,
-                    // ASIGNACIÓN FUNDAMENTAL PARA EL FRONT-END:
                     IDEstadoDePedido = p.IDEstadoDePedido, 
                     EstadoNombre = p.EstadoDePedido != null ? p.EstadoDePedido.NombreEstado : "Sin Estado",
                     ClienteNombre = p.Cliente != null ? $"{p.Cliente.Nombre} {p.Cliente.Apellido}" : "Sin Cliente",
@@ -80,11 +95,9 @@ namespace Back.Repositories
             var pedido = await _context.Pedidos.FindAsync(datos.IDPedido);
             if (pedido == null) return false;
 
-            // Actualizamos el estado y el usuario responsable
             pedido.IDEstadoDePedido = datos.IDNuevoEstado;
             pedido.IDUsuario = datos.IDUsuario;
 
-            // Registro de fecha real si el estado es Entregado (ID 7)
             if (datos.IDNuevoEstado == 7)
             {
                 pedido.FechaEntregaReal = DateTime.Now;

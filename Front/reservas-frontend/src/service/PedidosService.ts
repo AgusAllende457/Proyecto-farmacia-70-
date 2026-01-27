@@ -8,7 +8,6 @@ import {
 
 export const pedidosService = {
     async getFilteredOrders(filters: any): Promise<OrderSummaryDTO[]> {
-        // Construimos el objeto params con las llaves exactas que espera C# en el OrderFilterDTO
         const params: any = {};
         
         const estadoMap: { [key: string]: number } = {
@@ -23,12 +22,8 @@ export const pedidosService = {
             'Cancelado': 10 
         };
 
-        // 1. Mapeo de búsqueda (Search)
-        if (filters.search) {
-            params.Search = filters.search;
-        }
+        if (filters.search) params.Search = filters.search;
         
-        // 2. Mapeo de Estado (IDEstadoDePedido)
         if (filters.idEstadoDePedido && filters.idEstadoDePedido > 0) {
             params.IDEstadoDePedido = filters.idEstadoDePedido;
         } 
@@ -38,37 +33,60 @@ export const pedidosService = {
             params.IDEstadoDePedido = estadoMap[filters.estado];
         }
         
-        // 3. Mapeo de Usuario (IDUsuario)
-        // Unificamos idOperario/idCadete al nombre de propiedad que espera el Repository: IDUsuario
         if (filters.idOperario) params.IDUsuario = filters.idOperario;
         else if (filters.idCadete) params.IDUsuario = filters.idCadete;
         else if (filters.idUsuario) params.IDUsuario = filters.idUsuario;
 
-        // 4. Mapeo de Fechas (FechaDesde / FechaHasta)
         if (filters.fechaDesde) params.FechaDesde = filters.fechaDesde;
         if (filters.fechaHasta) params.FechaHasta = filters.fechaHasta;
 
-        // DEBUG: Verifica en la consola que IDEstadoDePedido cambie al tocar los botones
-        console.log("Filtros enviados al Backend:", params);
+        console.log("== DEBUG INICIO PETICIÓN ==");
+        console.log("Enviando parámetros al Backend:", params);
 
-        // Cambiamos la ruta para que coincida con OrdersController.cs [HttpGet("reporte")]
-        const response = await api.get<OrderSummaryDTO[]>('/Orders/reporte', {
-            params: params,
-        });
+        try {
+            const response = await api.get<OrderSummaryDTO[]>('/Orders/reporte', {
+                params: params,
+            });
 
-        return response.data;
+            console.log("Respuesta Exitosa del Servidor:", response.data);
+            
+            if (response.data.length === 0) {
+                console.warn("Aviso: El backend respondió con una lista VACÍA.");
+            }
+
+            return response.data;
+        } catch (error: any) {
+            console.error("== ERROR EN GET_FILTERED_ORDERS ==");
+            
+            if (error.response) {
+                // El servidor respondió con un status fuera del rango 2xx
+                console.error("Status Code:", error.response.status);
+                console.error("Data de error del Backend:", error.response.data);
+                
+                if (error.response.status === 404) {
+                    console.error("Error 404: No se encontró la ruta /Orders/reporte. Verifica el OrdersController.");
+                }
+                if (error.response.status === 401 || error.response.status === 403) {
+                    console.error("Error de Permisos: No estás autorizado para ver este reporte.");
+                }
+            } else if (error.request) {
+                // La petición se hizo pero no hubo respuesta
+                console.error("Error de Red: No se recibió respuesta del servidor. ¿Está el backend corriendo?");
+            } else {
+                console.error("Error Mensaje:", error.message);
+            }
+            
+            throw error;
+        }
     },
 
     async getPedidosByRol(rol: string, userId: number, otrosFiltros: any = {}): Promise<OrderSummaryDTO[]> {
         let filters = { ...otrosFiltros };
-        
-        // Asignamos el ID del usuario logueado según su rol para que el filtrado sea automático
         if (rol === 'Operario') {
             filters.idOperario = userId;
         } else if (rol === 'Cadete') {
             filters.idCadete = userId;
         }
-        
         return this.getFilteredOrders(filters);
     },
 
@@ -100,7 +118,12 @@ export const pedidosService = {
     },
 
     async createOrder(orderData: any): Promise<any> {
-        const response = await api.post('/Orders', orderData);
-        return response.data;
+        try {
+            const response = await api.post('/Orders', orderData);
+            return response.data;
+        } catch (error: any) {
+            console.error("Error al crear pedido:", error.response?.data || error.message);
+            throw error;
+        }
     }
 };
