@@ -10,7 +10,7 @@ import { OrderFilters } from '@components/orders/OrderFilters';
 import { pedidosService } from '../service/PedidosService';
 import { OrderSummaryDTO } from '../types/pedido.types';
 import { useAuth } from '@context/AuthContext';
-import { Truck, MapPin, Package, CheckCircle, XCircle, Clock, Navigation, Eye } from 'lucide-react';
+import { Truck, MapPin, CheckCircle, Clock, Navigation, Eye, AlertCircle } from 'lucide-react';
 
 export const DashboardCadete: React.FC = () => {
     const { user } = useAuth();
@@ -21,15 +21,18 @@ export const DashboardCadete: React.FC = () => {
     const [selectedPedidoDetalle, setSelectedPedidoDetalle] = useState<OrderSummaryDTO | null>(null);
     const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
 
-    useEffect(() => { loadPedidos(); }, []);
+    useEffect(() => { 
+        if (user?.id) loadPedidos(); 
+    }, [user?.id]);
 
     const loadPedidos = async (filtros = {}) => {
         try {
             setLoading(true);
-            const data = await pedidosService.getPedidosByRol('Cadete', user!.id);
+            // CORRECCIÓN: Ahora pasamos el objeto filtros al servicio
+            const data = await pedidosService.getPedidosByRol('Cadete', user!.id, filtros);
             setPedidos(data);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error al cargar pedidos del cadete:', error);
         } finally {
             setLoading(false);
         }
@@ -49,7 +52,9 @@ export const DashboardCadete: React.FC = () => {
 
     if (loading && pedidos.length === 0) return (
         <DashboardLayout>
-            <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>
+            <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
         </DashboardLayout>
     );
 
@@ -66,12 +71,14 @@ export const DashboardCadete: React.FC = () => {
                     <Card><div className="flex items-center justify-between"><div><p className="text-sm font-medium text-gray-600">Entregados Hoy</p><p className="text-2xl font-bold">{pedidos.filter(p => p.estadoNombre === 'Entregado').length}</p></div><CheckCircle className="text-green-600"/></div></Card>
                 </div>
 
-                {/* Filtros para el Cadete */}
+                {/* Filtros para el Cadete - Asegúrate que el componente filtre internamente por los estados de logística */}
                 <OrderFilters userRole="Cadete" onFilterChange={loadPedidos} />
 
                 <Card>
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2"><MapPin className="w-5 h-5 text-yellow-600" /> Pedidos en Camino</h2>
+                        <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                            <MapPin className="w-5 h-5 text-yellow-600" /> Pedidos en Camino
+                        </h2>
                     </div>
 
                     {pedidosEnCamino.length === 0 ? (
@@ -79,14 +86,28 @@ export const DashboardCadete: React.FC = () => {
                     ) : (
                         <div className="space-y-3">
                             {pedidosEnCamino.map((pedido) => (
-                                <div key={pedido.idPedido} className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <div key={pedido.idPedido} className={`border rounded-lg p-4 transition-colors ${pedido.estaDemorado ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
                                     <div className="flex items-center justify-between mb-3">
-                                        <div><p className="font-semibold text-gray-900">Pedido #{pedido.idPedido}</p><p className="text-sm text-gray-600">{pedido.clienteNombre}</p></div>
+                                        <div className="flex items-center gap-2">
+                                            <div>
+                                                <p className="font-semibold text-gray-900">Pedido #{pedido.idPedido}</p>
+                                                <p className="text-sm text-gray-600">{pedido.clienteNombre}</p>
+                                            </div>
+                                            {pedido.estaDemorado && (
+                                                <span title="Pedido Demorado">
+                                                    <AlertCircle className="w-5 h-5 text-red-500 animate-pulse" />
+                                                </span>
+                                            )}
+                                        </div>
                                         <Badge variant="warning">{pedido.estadoNombre}</Badge>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button variant="primary" size="sm" onClick={() => handleConfirmarEntrega(pedido)} className="flex-1"><Navigation className="w-4 h-4 mr-2" /> Confirmar Entrega</Button>
-                                        <Button variant="secondary" size="sm" onClick={() => handleVerDetalle(pedido)}><Eye className="w-4 h-4" /></Button>
+                                        <Button variant="primary" size="sm" onClick={() => handleConfirmarEntrega(pedido)} className="flex-1">
+                                            <Navigation className="w-4 h-4 mr-2" /> Confirmar Entrega
+                                        </Button>
+                                        <Button variant="secondary" size="sm" onClick={() => handleVerDetalle(pedido)}>
+                                            <Eye className="w-4 h-4" />
+                                        </Button>
                                     </div>
                                 </div>
                             ))}
@@ -108,14 +129,28 @@ export const DashboardCadete: React.FC = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {pedidos.map((pedido) => (
-                                    <tr key={pedido.idPedido} className="hover:bg-gray-50">
-                                        <td className="px-4 py-3 text-sm">#{pedido.idPedido}</td>
+                                    <tr key={pedido.idPedido} className={`hover:bg-gray-50 ${pedido.estaDemorado ? 'bg-red-50/30' : ''}`}>
+                                        <td className="px-4 py-3 text-sm font-medium">
+                                            <div className="flex items-center gap-2">
+                                                #{pedido.idPedido}
+                                                {pedido.estaDemorado && (
+                                                    <span title="Pedido Demorado">
+                                                        <AlertCircle className="w-4 h-4 text-red-500" />
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
                                         <td className="px-4 py-3 text-sm">{pedido.clienteNombre}</td>
                                         <td className="px-4 py-3">
-                                            <Badge variant={pedido.estadoNombre === 'Entregado' ? 'success' : 'info'}>{pedido.estadoNombre}</Badge>
+                                            <div className="flex flex-col">
+                                                <Badge variant={pedido.estadoNombre === 'Entregado' ? 'success' : 'info'}>
+                                                    {pedido.estadoNombre}
+                                                </Badge>
+                                                {pedido.estaDemorado && <span className="text-[10px] text-red-600 font-bold uppercase">Demorado</span>}
+                                            </div>
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            <button onClick={() => handleVerDetalle(pedido)} className="text-blue-600 font-bold text-sm">Detalles</button>
+                                            <button onClick={() => handleVerDetalle(pedido)} className="text-blue-600 font-bold text-sm hover:underline">Detalles</button>
                                         </td>
                                     </tr>
                                 ))}

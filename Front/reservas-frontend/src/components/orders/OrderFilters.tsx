@@ -14,9 +14,10 @@ const STATUS_MAP: Record<string, number> = {
     'Preparar pedido': 2,
     'Demorado': 3,
     'Listo para despachar': 4,
-    'Despachando': 5,
+    'Despachado': 5,
     'En camino': 6,
     'Entregado': 7,
+    'Entrega fallida': 8, // Asegúrate que este ID coincida con tu DB
     'Cancelado': 10
 };
 
@@ -69,18 +70,24 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
 
     // --- LÓGICA DE FILTRADO DE BOTONES SEGÚN ROL ---
     const statuses = Object.keys(STATUS_MAP).filter(s => {
-        // Si es Operario, solo mostramos estos estados específicos
         if (userRole === 'Operario') {
+            // El operario ve el flujo de preparación
             const allowed = ['Todos', 'Sin preparar', 'Preparar pedido', 'Demorado', 'Listo para despachar', 'Cancelado'];
             return allowed.includes(s);
         }
-        // Para otros roles, mantenemos la lógica anterior (quitar despachando y falla)
-        return s !== 'Despachando' && s !== 'Entrega fallida';
+        if (userRole === 'Cadete') {
+            // El cadete ve el flujo de logística (lo que pediste)
+            const allowed = ['Todos', 'Despachado', 'En camino', 'Entregado', 'Cancelado', 'Entrega fallida'];
+            return allowed.includes(s);
+        }
+        // Administrador ve todo excepto estados técnicos si los hubiera
+        return true;
     });
 
     return (
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                {/* Botones de Estado Dinámicos */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
                     {statuses.map(status => (
                         <button
@@ -97,6 +104,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
                     ))}
                 </div>
 
+                {/* Buscador */}
                 <div className="flex items-center gap-2">
                     <div className="relative flex-1 sm:w-64">
                         <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
@@ -127,6 +135,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ userRole, onFilterCh
                 </div>
             </div>
 
+            {/* Panel Avanzado solo para Admin */}
             {showAdvanced && userRole === 'Administrador' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-gray-100">
                     <div className="flex flex-col gap-1">
