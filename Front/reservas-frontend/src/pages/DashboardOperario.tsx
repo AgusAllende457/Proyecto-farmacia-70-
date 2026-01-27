@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '@components/layout/DashboardLayout';
 import { Card } from '@components/common/Card';
 import { Badge } from '@components/common/Badge';
-import { Button } from '@components/common/Button';
 import { DetallePedidoModal } from '../components/pedidos/DetallePedidoModal';
 import { OrderFilters } from '@components/orders/OrderFilters';
 import { pedidosService } from '../service/PedidosService';
 import { OrderSummaryDTO } from '../types/pedido.types';
 import { useAuth } from '@context/AuthContext';
-import { Package, Clock, CheckCircle, Eye } from 'lucide-react';
+import { Package, Clock, CheckCircle, Eye, AlertCircle } from 'lucide-react';
 
 export const DashboardOperario: React.FC = () => {
     const { user } = useAuth();
@@ -17,16 +16,18 @@ export const DashboardOperario: React.FC = () => {
     const [selectedPedidoDetalle, setSelectedPedidoDetalle] = useState<OrderSummaryDTO | null>(null);
     const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
 
-    useEffect(() => { loadPedidos(); }, []);
+    useEffect(() => { 
+        if (user?.id) loadPedidos(); 
+    }, [user?.id]);
 
     const loadPedidos = async (filtros = {}) => {
         try {
             setLoading(true);
-            // Si el servicio soporta filtros, los pasamos, si no, filtramos localmente o por rol
-            const data = await pedidosService.getPedidosByRol('Operario', user!.id);
+            // Ahora sí enviamos el objeto 'filtros' al servicio
+            const data = await pedidosService.getPedidosByRol('Operario', user!.id, filtros);
             setPedidos(data);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error al cargar pedidos:', error);
         } finally {
             setLoading(false);
         }
@@ -42,7 +43,9 @@ export const DashboardOperario: React.FC = () => {
 
     if (loading && pedidos.length === 0) return (
         <DashboardLayout>
-            <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>
+            <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
         </DashboardLayout>
     );
 
@@ -60,7 +63,7 @@ export const DashboardOperario: React.FC = () => {
                     <Card><div className="flex items-center justify-between"><div><p className="text-sm font-medium text-gray-600">Total Asignados</p><p className="text-3xl font-bold text-gray-900 mt-2">{pedidos.length}</p></div><div className="bg-purple-100 p-3 rounded-full"><Clock className="w-8 h-8 text-purple-600" /></div></div></Card>
                 </div>
 
-                {/* Filtros para el Operario */}
+                {/* Este componente ahora dispara loadPedidos(filtros) correctamente */}
                 <OrderFilters userRole="Operario" onFilterChange={loadPedidos} />
 
                 <Card>
@@ -78,20 +81,49 @@ export const DashboardOperario: React.FC = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {pedidos.map((pedido) => (
-                                    <tr key={pedido.idPedido} className="hover:bg-gray-50">
-                                        <td className="px-4 py-3 text-sm font-medium text-gray-900">#{pedido.idPedido}</td>
+                                    <tr 
+                                        key={pedido.idPedido} 
+                                        className={`hover:bg-gray-50 transition-colors ${pedido.estaDemorado ? 'bg-red-50/50' : ''}`}
+                                    >
+                                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                            <div className="flex items-center gap-2">
+                                                #{pedido.idPedido}
+                                                {pedido.estaDemorado && (
+                                                    <span title="Pedido Demorado">
+                                                        <AlertCircle className="w-4 h-4 text-red-500" />
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
                                         <td className="px-4 py-3 text-sm text-gray-700">{pedido.clienteNombre}</td>
                                         <td className="px-4 py-3">
-                                            <Badge variant={pedido.estadoNombre === 'Listo para despachar' ? 'success' : 'info'}>{pedido.estadoNombre}</Badge>
+                                            <div className="flex flex-col gap-1">
+                                                <Badge variant={pedido.estadoNombre === 'Listo para despachar' ? 'success' : 'info'}>
+                                                    {pedido.estadoNombre}
+                                                </Badge>
+                                                {pedido.estaDemorado && (
+                                                    <span className="text-[10px] font-bold text-red-600 uppercase tracking-wider">Demorado</span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="px-4 py-3 text-sm font-medium text-gray-900">${pedido.total.toFixed(2)}</td>
                                         <td className="px-4 py-3 text-right">
-                                            <button onClick={() => handleVerDetalle(pedido)} className="text-blue-600 hover:text-blue-800 font-bold text-sm flex items-center justify-end gap-1 ml-auto">
+                                            <button 
+                                                onClick={() => handleVerDetalle(pedido)} 
+                                                className="text-blue-600 hover:text-blue-800 font-bold text-sm flex items-center justify-end gap-1 ml-auto"
+                                            >
                                                 <Eye className="w-4 h-4" /> Ver detalle
                                             </button>
                                         </td>
                                     </tr>
                                 ))}
+                                {pedidos.length === 0 && !loading && (
+                                    <tr>
+                                        <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                                            No se encontraron pedidos con los filtros aplicados.
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

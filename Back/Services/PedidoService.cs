@@ -18,7 +18,13 @@ namespace Back.Services
 
         public async Task<IEnumerable<OrderSummaryDTO>> GetFilteredOrdersAsync(OrderFilterDTO filters)
         {
-            // Validación de fechas
+            // 1. Normalización: Si el ID es 0 o nulo, tratamos como "Todos"
+            if (filters.IDEstadoDePedido == 0)
+            {
+                filters.IDEstadoDePedido = null;
+            }
+
+            // 2. Validación de fechas
             if (filters.FechaDesde.HasValue && filters.FechaHasta.HasValue)
             {
                 if (filters.FechaDesde > filters.FechaHasta)
@@ -27,7 +33,7 @@ namespace Back.Services
                 }
             }
 
-            // Pasamos los filtros (incluyendo el nuevo Search) al repositorio
+            // 3. Pasamos los filtros al repositorio (Asegúrate de que el Repo use filters.IDEstadoDePedido)
             return await _pedidoRepository.GetFilteredOrdersAsync(filters);
         }
 

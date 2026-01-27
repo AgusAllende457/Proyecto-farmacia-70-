@@ -1,37 +1,14 @@
 import { api } from './api';
 import {
     OrderSummaryDTO,
-    OrderFilterDTO,
     AssignOperatorDTO,
     AssignDeliveryDTO,
     ChangeOrderStatusDTO,
 } from '@/types/pedido.types';
 
 export const pedidosService = {
-    // --- NUEVOS MÉTODOS FILTRADOS ---
-
-    /**
-     * Trae SOLO pedidos en estado "Sin preparar" (ID 1)
-     * Úsalo en la pantalla de Asignar Operario
-     */
-    async getPendientesOperario(): Promise<OrderSummaryDTO[]> {
-        const response = await api.get<OrderSummaryDTO[]>('/orders/pendientes-operario');
-        return response.data;
-    },
-
-    /**
-     * Trae SOLO pedidos en estado "Preparado" (ID 2)
-     * Úsalo en la pantalla de Asignar Cadete
-     */
-    async getPendientesCadete(): Promise<OrderSummaryDTO[]> {
-        const response = await api.get<OrderSummaryDTO[]>('/orders/pendientes-cadete');
-        return response.data;
-    },
-
-    // --- MÉTODOS EXISTENTES ---
-
     async getFilteredOrders(filters: any): Promise<OrderSummaryDTO[]> {
-        const cleanFilters: any = {};
+        const params: any = {};
         
         const estadoMap: { [key: string]: number } = {
             'Sin preparar': 1,
@@ -42,51 +19,111 @@ export const pedidosService = {
             'En camino': 6,
             'Entregado': 7,
             'Entrega fallida': 8,
-            'Cancelado': 9
+            'Cancelado': 10 
         };
 
-        if (filters.search) cleanFilters.search = filters.search;
+        if (filters.search) params.Search = filters.search;
         
-        if (filters.estado && filters.estado !== 'Todos') {
-            cleanFilters.idEstado = estadoMap[filters.estado];
+        if (filters.idEstadoDePedido && filters.idEstadoDePedido > 0) {
+            params.IDEstadoDePedido = filters.idEstadoDePedido;
+        } 
+        else if (filters.estadoNombre && filters.estadoNombre !== 'Todos') {
+            params.IDEstadoDePedido = estadoMap[filters.estadoNombre];
+        } else if (filters.estado && filters.estado !== 'Todos') {
+            params.IDEstadoDePedido = estadoMap[filters.estado];
         }
         
-        if (filters.idOperario) cleanFilters.idOperario = filters.idOperario;
-        if (filters.idCadete) cleanFilters.idCadete = filters.idCadete;
-        if (filters.fecha) cleanFilters.fecha = filters.fecha;
-        if (filters.idUsuario) cleanFilters.idUsuario = filters.idUsuario;
+        if (filters.idOperario) params.IDUsuario = filters.idOperario;
+        else if (filters.idCadete) params.IDUsuario = filters.idCadete;
+        else if (filters.idUsuario) params.IDUsuario = filters.idUsuario;
 
-        const response = await api.get<OrderSummaryDTO[]>('/filtrarpedidos/reporte', {
-            params: cleanFilters,
-        });
+        if (filters.fechaDesde) params.FechaDesde = filters.fechaDesde;
+        if (filters.fechaHasta) params.FechaHasta = filters.fechaHasta;
 
+        console.log("== DEBUG INICIO PETICIÓN ==");
+        console.log("Enviando parámetros al Backend:", params);
+
+        try {
+            const response = await api.get<OrderSummaryDTO[]>('/Orders/reporte', {
+                params: params,
+            });
+
+            console.log("Respuesta Exitosa del Servidor:", response.data);
+            
+            if (response.data.length === 0) {
+                console.warn("Aviso: El backend respondió con una lista VACÍA.");
+            }
+
+            return response.data;
+        } catch (error: any) {
+            console.error("== ERROR EN GET_FILTERED_ORDERS ==");
+            
+            if (error.response) {
+                // El servidor respondió con un status fuera del rango 2xx
+                console.error("Status Code:", error.response.status);
+                console.error("Data de error del Backend:", error.response.data);
+                
+                if (error.response.status === 404) {
+                    console.error("Error 404: No se encontró la ruta /Orders/reporte. Verifica el OrdersController.");
+                }
+                if (error.response.status === 401 || error.response.status === 403) {
+                    console.error("Error de Permisos: No estás autorizado para ver este reporte.");
+                }
+            } else if (error.request) {
+                // La petición se hizo pero no hubo respuesta
+                console.error("Error de Red: No se recibió respuesta del servidor. ¿Está el backend corriendo?");
+            } else {
+                console.error("Error Mensaje:", error.message);
+            }
+            
+            throw error;
+        }
+    },
+
+    async getPedidosByRol(rol: string, userId: number, otrosFiltros: any = {}): Promise<OrderSummaryDTO[]> {
+        let filters = { ...otrosFiltros };
+        if (rol === 'Operario') {
+            filters.idOperario = userId;
+        } else if (rol === 'Cadete') {
+            filters.idCadete = userId;
+        }
+        return this.getFilteredOrders(filters);
+    },
+
+    async getPendientesOperario(): Promise<OrderSummaryDTO[]> {
+        const response = await api.get<OrderSummaryDTO[]>('/Orders/pendientes-operario');
+        return response.data;
+    },
+
+    async getPendientesCadete(): Promise<OrderSummaryDTO[]> {
+        const response = await api.get<OrderSummaryDTO[]>('/Orders/pendientes-cadete');
         return response.data;
     },
 
     async asignarOperario(data: AssignOperatorDTO): Promise<void> {
-        await api.patch('/orders/asignar-operario', data);
+        await api.patch('/Orders/asignar-operario', data);
     },
 
     async asignarCadete(data: AssignDeliveryDTO): Promise<void> {
-        await api.patch('/orders/asignar-cadete', data);
+        await api.patch('/Orders/asignar-cadete', data);
     },
 
     async cambiarEstado(data: ChangeOrderStatusDTO): Promise<void> {
         const payload = {
             IDPedido: data.idPedido,
             IDNuevoEstado: data.idNuevoEstado,
-            IDUsuario: data.idUsuario,
-            Observaciones: data.observaciones || "",
-            MotivoCancelacion: data.idNuevoEstado === 8 ? data.observaciones : null
+            IDUsuario: data.idUsuario
         };
-        await api.put(`/orders/${data.idPedido}/estado`, payload);
+        await api.put(`/Orders/${data.idPedido}/estado`, payload);
     },
 
-    async getPedidosByRol(rol: string, userId: number, otrosFiltros: any = {}): Promise<OrderSummaryDTO[]> {
-        let filters = { ...otrosFiltros };
-        if (rol === 'Operario' || rol === 'Cadete') {
-            filters.idUsuario = userId;
+    async createOrder(orderData: any): Promise<any> {
+        try {
+            const response = await api.post('/Orders', orderData);
+            return response.data;
+        } catch (error: any) {
+            console.error("Error al crear pedido:", error.response?.data || error.message);
+            throw error;
         }
-        return this.getFilteredOrders(filters);
-    },
+    }
 };

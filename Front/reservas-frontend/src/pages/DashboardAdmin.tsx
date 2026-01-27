@@ -4,6 +4,7 @@ import { Card } from '../components/common/Card.tsx';
 import { Badge } from '@components/common/Badge.tsx';
 import { Button } from '@components/common/Button';
 import { AsignarOperarioModal } from '@components/pedidos/AsignarOperarioModal';
+import { AsignarCadeteModal } from '@components/pedidos/AsignarCadeteModal';
 import { DetallePedidoModal } from '@components/pedidos/DetallePedidoModal';
 import { OrderFilters } from '@components/orders/OrderFilters';
 import { pedidosService } from '../service/PedidosService';
@@ -27,14 +28,18 @@ export const DashboardAdmin: React.FC = () => {
     const [pedidos, setPedidos] = useState<OrderSummaryDTO[]>([]);
     const [loading, setLoading] = useState(true);
     
+    // Estados para Modales
     const [selectedPedido, setSelectedPedido] = useState<OrderSummaryDTO | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
+    
+    const [selectedPedidoCadete, setSelectedPedidoCadete] = useState<OrderSummaryDTO | null>(null);
+    const [modalCadeteOpen, setModalCadeteOpen] = useState(false);
+
     const [selectedPedidoDetalle, setSelectedPedidoDetalle] = useState<OrderSummaryDTO | null>(null);
     const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
 
     const [stats, setStats] = useState({ activos: 0, demorados: 0, entregados: 0, cancelados: 0 });
 
-    // Carga inicial sin filtros
     useEffect(() => { 
         loadDashboardData(); 
     }, []);
@@ -42,14 +47,13 @@ export const DashboardAdmin: React.FC = () => {
     const loadDashboardData = async (filtros = {}) => {
         try {
             setLoading(true);
-            // Llamada al servicio con los filtros mapeados (search, idEstado, idOperario, etc)
             const data = await pedidosService.getFilteredOrders(filtros);
             setPedidos(data);
             
-            // Actualizar estadísticas basadas en los datos filtrados
             setStats({
                 activos: data.filter(p => !['Entregado', 'Cancelado'].includes(p.estadoNombre)).length,
-                demorados: data.filter(p => p.estaDemorado).length,
+                // Nota: Asegúrate que en tu pedido.types.ts coincida el casing (estaDemorado o EstaDemorado)
+                demorados: data.filter(p => p.estaDemorado || (p as any).EstaDemorado).length,
                 entregados: data.filter(p => p.estadoNombre === 'Entregado').length,
                 cancelados: data.filter(p => p.estadoNombre === 'Cancelado').length,
             });
@@ -83,7 +87,7 @@ export const DashboardAdmin: React.FC = () => {
                     </Card>
                     <Card>
                         <div className="flex items-center justify-between">
-                            <div><p className="text-sm text-gray-600">Demorados</p><p className="text-2xl font-bold">{stats.demorados}</p></div>
+                            <div><p className="text-sm text-gray-600">Demorados</p><p className="text-2xl font-bold text-yellow-600">{stats.demorados}</p></div>
                             <AlertTriangle className="text-yellow-600"/>
                         </div>
                     </Card>
@@ -101,7 +105,6 @@ export const DashboardAdmin: React.FC = () => {
                     </Card>
                 </div>
 
-                {/* COMPONENTE DE FILTROS - Conecta con la función de carga */}
                 <OrderFilters 
                     userRole="Administrador" 
                     onFilterChange={(filtros) => loadDashboardData(filtros)} 
@@ -114,7 +117,7 @@ export const DashboardAdmin: React.FC = () => {
                 ) : (
                     <>
                         <div className="grid lg:grid-cols-2 gap-6">
-                            {/* Columna Izquierda: Sin Preparar */}
+                            {/* Columna: Pendientes de Operario */}
                             <Card>
                                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><Users className="w-5 h-5" /> Pendientes de Operario</h2>
                                 <div className="space-y-3">
@@ -129,12 +132,12 @@ export const DashboardAdmin: React.FC = () => {
                                             </div>
                                         ))
                                     ) : (
-                                        <p className="text-gray-500 text-sm italic">No hay pedidos pendientes de asignar operario.</p>
+                                        <p className="text-gray-500 text-sm italic">No hay pedidos para asignar operario.</p>
                                     )}
                                 </div>
                             </Card>
                             
-                            {/* Columna Derecha: Listos para Despachar */}
+                            {/* Columna: Listos para Cadete (EL BOTÓN QUE SOLICITASTE) */}
                             <Card>
                                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><Truck className="w-5 h-5" /> Listos para Cadete</h2>
                                 <div className="space-y-3">
@@ -144,18 +147,24 @@ export const DashboardAdmin: React.FC = () => {
                                                 <div><p className="font-medium">#{pedido.idPedido}</p><p className="text-sm text-gray-500">{pedido.clienteNombre}</p></div>
                                                 <div className="flex gap-2">
                                                     <button onClick={() => { setSelectedPedidoDetalle(pedido); setModalDetalleOpen(true); }} className="p-2 text-gray-400 hover:text-blue-600 transition-colors"><Eye className="w-5 h-5"/></button>
-                                                    <Button size="sm" variant="success">Asignar Cadete</Button>
+                                                    <Button 
+                                                        size="sm" 
+                                                        variant="success" 
+                                                        onClick={() => { setSelectedPedidoCadete(pedido); setModalCadeteOpen(true); }}
+                                                    >
+                                                        Asignar Cadete
+                                                    </Button>
                                                 </div>
                                             </div>
                                         ))
                                     ) : (
-                                        <p className="text-gray-500 text-sm italic">No hay pedidos listos para cadete.</p>
+                                        <p className="text-gray-500 text-sm italic">No hay pedidos listos para despacho.</p>
                                     )}
                                 </div>
                             </Card>
                         </div>
 
-                        {/* Tabla General de Pedidos */}
+                        {/* Tabla General */}
                         <Card>
                             <h2 className="text-xl font-semibold mb-4">Todos los Pedidos</h2>
                             <div className="overflow-x-auto">
@@ -164,40 +173,32 @@ export const DashboardAdmin: React.FC = () => {
                                         <tr>
                                             <th className="p-3 font-semibold text-gray-600">ID</th>
                                             <th className="p-3 font-semibold text-gray-600">Cliente</th>
-                                            <th className="p-3 font-semibold text-gray-600">Operario Asig.</th>
+                                            <th className="p-3 font-semibold text-gray-600">Responsable</th>
                                             <th className="p-3 font-semibold text-gray-600">Estado</th>
                                             <th className="p-3 text-right font-semibold text-gray-600">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {pedidos.length > 0 ? (
-                                            pedidos.map((pedido) => (
-                                                <tr key={pedido.idPedido} className="border-t hover:bg-gray-50 transition-colors">
-                                                    <td className="p-3">#{pedido.idPedido}</td>
-                                                    <td className="p-3 font-medium text-gray-800">{pedido.clienteNombre}</td>
-                                                    <td className="p-3 text-sm text-gray-500">{pedido.operarioNombre || 'No asignado'}</td>
-                                                    <td className="p-3">
-                                                        <Badge variant={pedido.estaDemorado ? 'warning' : 'info'}>
-                                                            {pedido.estadoNombre}
-                                                        </Badge>
-                                                    </td>
-                                                    <td className="p-3 text-right">
-                                                        <button 
-                                                            onClick={() => { setSelectedPedidoDetalle(pedido); setModalDetalleOpen(true); }} 
-                                                            className="text-blue-600 font-bold text-sm hover:underline"
-                                                        >
-                                                            Ver detalles
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={5} className="p-8 text-center text-gray-500">
-                                                    No se encontraron pedidos con los filtros aplicados.
+                                        {pedidos.map((pedido) => (
+                                            <tr key={pedido.idPedido} className="border-t hover:bg-gray-50 transition-colors">
+                                                <td className="p-3">#{pedido.idPedido}</td>
+                                                <td className="p-3 font-medium text-gray-800">{pedido.clienteNombre}</td>
+                                                <td className="p-3 text-sm text-gray-500">{pedido.responsableNombre || 'No asignado'}</td>
+                                                <td className="p-3">
+                                                    <Badge variant={(pedido.estaDemorado || (pedido as any).EstaDemorado) ? 'warning' : 'info'}>
+                                                        {pedido.estadoNombre}
+                                                    </Badge>
+                                                </td>
+                                                <td className="p-3 text-right">
+                                                    <button 
+                                                        onClick={() => { setSelectedPedidoDetalle(pedido); setModalDetalleOpen(true); }} 
+                                                        className="text-blue-600 font-bold text-sm hover:underline"
+                                                    >
+                                                        Ver detalles
+                                                    </button>
                                                 </td>
                                             </tr>
-                                        )}
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -210,8 +211,17 @@ export const DashboardAdmin: React.FC = () => {
             {selectedPedido && (
                 <AsignarOperarioModal 
                     isOpen={modalOpen} 
-                    onClose={() => setModalOpen(false)} 
+                    onClose={() => { setModalOpen(false); setSelectedPedido(null); }} 
                     pedido={selectedPedido} 
+                    onSuccess={() => loadDashboardData()} 
+                />
+            )}
+
+            {selectedPedidoCadete && (
+                <AsignarCadeteModal 
+                    isOpen={modalCadeteOpen} 
+                    onClose={() => { setModalCadeteOpen(false); setSelectedPedidoCadete(null); }} 
+                    pedido={selectedPedidoCadete} 
                     onSuccess={() => loadDashboardData()} 
                 />
             )}

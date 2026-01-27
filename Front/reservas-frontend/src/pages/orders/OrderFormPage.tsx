@@ -1,11 +1,62 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, User, Package, Save, ArrowLeft } from 'lucide-react';
-import { SearchableSelect } from '@components/common/SearchableSelect';
+import { Plus, Trash2, User, Package, Save, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { SearchableSelect } from '@/components/common/SearchableSelect';
 import { useNavigate } from 'react-router-dom';
+import { pedidosService } from '@/service/PedidosService';
 
 const OrderFormPage: React.FC = () => {
     const navigate = useNavigate();
+    const [clienteId, setClienteId] = useState<string>('');
     const [items, setItems] = useState([{ tempId: Date.now(), productId: '', quantity: 1 }]);
+
+    const addProduct = () => {
+        setItems([...items, { tempId: Date.now(), productId: '', quantity: 1 }]);
+    };
+
+    const removeProduct = (tempId: number) => {
+        if (items.length > 1) {
+            setItems(items.filter(item => item.tempId !== tempId));
+        }
+    };
+
+    // Función para actualizar un producto específico en la lista
+    const updateProductInList = (index: number, prodId: string) => {
+        const newItems = [...items];
+        newItems[index].productId = prodId;
+        setItems(newItems);
+    };
+
+    const updateQuantity = (index: number, qty: number) => {
+        const newItems = [...items];
+        newItems[index].quantity = qty;
+        setItems(newItems);
+    };
+
+    const handleSave = async () => {
+        if (!clienteId) return alert("Por favor selecciona un cliente");
+        
+        const pedido = {
+            idCliente: parseInt(clienteId),
+            fecha: new Date().toISOString(),
+            detalles: items
+                .filter(i => i.productId !== '') // Solo enviamos los que tienen producto seleccionado
+                .map(i => ({
+                    idProducto: parseInt(i.productId),
+                    cantidad: i.quantity
+                }))
+        };
+
+        if (pedido.detalles.length === 0) return alert("Agrega al menos un producto");
+
+        try {
+            await pedidosService.createOrder(pedido);
+            alert("Pedido creado con éxito");
+            navigate('/pedidos'); 
+        } catch (error) {
+            console.error("Error al guardar:", error);
+            alert("Error al guardar el pedido");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
@@ -18,20 +69,74 @@ const OrderFormPage: React.FC = () => {
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-blue-600 px-6 py-4">
-                        <h2 className="text-white font-semibold flex items-center gap-2"><Plus size={20} /> Datos del Pedido</h2>
+                    <div className="bg-blue-600 px-6 py-4 text-white font-semibold flex items-center gap-2">
+                        <Plus size={20} /> Datos del Pedido
                     </div>
 
                     <div className="p-6 space-y-8">
-                        {/* El formulario que ya tenías sin los filtros arriba */}
+                        {/* Selección de Cliente */}
                         <div className="max-w-md">
-                            <SearchableSelect label="Cliente / Paciente" options={[]} onSelect={() => { } } icon={User} placeholder={''} />
+                            <SearchableSelect 
+                                label="Cliente / Paciente" 
+                                options={[]} // Aquí cargarás tus clientes
+                                onSelect={(opt: any) => setClienteId(String(opt.value))} 
+                                icon={User} 
+                                placeholder="Seleccione un cliente..." 
+                            />
                         </div>
-                        {/* ... resto del formulario de productos ... */}
+
+                        {/* Listado de Productos */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-medium text-gray-700 flex items-center gap-2">
+                                <Package size={18} /> Productos
+                            </h3>
+                            
+                            {items.map((item, index) => (
+                                <div key={item.tempId} className="flex items-end gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                    <div className="flex-1">
+                                        <SearchableSelect 
+                                            label={`Producto #${index + 1}`}
+                                            options={[]} // Aquí cargarás tus productos
+                                            onSelect={(opt: any) => updateProductInList(index, String(opt.value))}
+                                            icon={ShoppingCart}
+                                            placeholder="Buscar producto..."
+                                        />
+                                    </div>
+                                    <div className="w-24">
+                                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Cant.</label>
+                                        <input 
+                                            type="number" 
+                                            min="1"
+                                            value={item.quantity}
+                                            onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1)}
+                                            className="w-full p-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                    <button 
+                                        onClick={() => removeProduct(item.tempId)}
+                                        className="p-2.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                    >
+                                        <Trash2 size={20} />
+                                    </button>
+                                </div>
+                            ))}
+
+                            <button 
+                                onClick={addProduct}
+                                className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-500 hover:text-blue-500 flex items-center justify-center gap-2 font-medium"
+                            >
+                                <Plus size={18} /> Agregar otro producto
+                            </button>
+                        </div>
                         
                         <div className="pt-6 border-t flex justify-end gap-3">
-                            <button onClick={() => navigate(-1)} className="px-6 py-2 text-gray-600 hover:bg-gray-50">Cancelar</button>
-                            <button className="bg-blue-600 text-white px-10 py-2 rounded-xl font-bold flex items-center gap-2">
+                            <button onClick={() => navigate(-1)} className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-xl">
+                                Cancelar
+                            </button>
+                            <button 
+                                onClick={handleSave}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-blue-200"
+                            >
                                 <Save size={18} /> Guardar Pedido
                             </button>
                         </div>

@@ -12,16 +12,26 @@ namespace Back.Controllers
     {
         private readonly IOrderStatusService _statusService;
         private readonly ITrackingService _trackingService;
-        private readonly IOrderRepository _orderRepository;
+        private readonly IPedidoRepository _pedidoRepository; // Cambiado a IPedidoRepository para usar los filtros
 
         public OrdersController(
             IOrderStatusService statusService, 
             ITrackingService trackingService, 
-            IOrderRepository orderRepository)
+            IPedidoRepository pedidoRepository) // Inyectamos el repositorio que tiene GetFilteredOrdersAsync
         {
             _statusService = statusService;
             _trackingService = trackingService;
-            _orderRepository = orderRepository;
+            _pedidoRepository = pedidoRepository;
+        }
+
+        // --- NUEVO ENDPOINT DE REPORTES FILTRADOS ---
+        // Este es el que llama tu frontend como /api/Orders/reporte
+        [Authorize] // Permitir a cualquier usuario autenticado (Admin, Operario, Cadete)
+        [HttpGet("reporte")]
+        public async Task<IActionResult> GetReporte([FromQuery] OrderFilterDTO filters)
+        {
+            var pedidos = await _pedidoRepository.GetFilteredOrdersAsync(filters);
+            return Ok(pedidos);
         }
 
         // --- SECCIÓN ADMINISTRADOR: CONSULTAS FILTRADAS ---
@@ -30,8 +40,8 @@ namespace Back.Controllers
         [HttpGet("pendientes-operario")]
         public async Task<IActionResult> GetPendientesOperario()
         {
-            // Estado 1: "Sin preparar"
-            var pedidos = await _orderRepository.GetOrdersByStatusAsync(1); 
+            // Nota: Si GetOrdersByStatusAsync no está en IPedidoRepository, asegúrate de que la interfaz lo tenga
+            var pedidos = await _pedidoRepository.GetFilteredOrdersAsync(new OrderFilterDTO { IDEstadoDePedido = 1 }); 
             return Ok(pedidos);
         }
 
@@ -39,8 +49,7 @@ namespace Back.Controllers
         [HttpGet("pendientes-cadete")]
         public async Task<IActionResult> GetPendientesCadete()
         {
-            // Usamos ID 4: "Listo para despachar" (coincide con tu DbInitializer)
-            var pedidos = await _orderRepository.GetOrdersByStatusAsync(4); 
+            var pedidos = await _pedidoRepository.GetFilteredOrdersAsync(new OrderFilterDTO { IDEstadoDePedido = 4 }); 
             return Ok(pedidos);
         }
 
@@ -77,7 +86,7 @@ namespace Back.Controllers
 
         // --- SECCIÓN OPERATIVA: CAMBIOS DE ESTADO ---
 
-        [Authorize(Roles = "Cadete,Administrador")]
+        [Authorize] // Permitir a Admin, Operario y Cadete cambiar estados
         [HttpPut("{id}/estado")]
         public async Task<IActionResult> CambiarEstado(int id, [FromBody] ChangeOrderStatusDTO changeStatusDto)
         {
