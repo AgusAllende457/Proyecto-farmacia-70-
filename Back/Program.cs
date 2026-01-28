@@ -2,7 +2,7 @@ using AutoMapper;
 using Back.Data;
 using Back.Repositories;
 using Back.Repositories.Interfaces;
-using Back.Validators;
+using Back.Validators; // Asegúrate de que este using esté presente
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
 
-
 namespace Back
 {
     public class Program
@@ -21,34 +20,34 @@ namespace Back
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
-            // Busca donde dice builder.Services.AddControllers() y cámbialo por esto:
+
+            // Configuración de Controladores y JSON
             builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        // 1. Mantenemos camelCase (minúsculas) para que el Login y el resto del Front no se rompan
-        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        
-        // 2. IMPORTANTE: Esto permite que si el Front manda "idPedido" o "IDPedido", .NET lo entienda igual
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-    });
+                .AddJsonOptions(options =>
+                {
+                    // 1. Mantenemos camelCase para el Front
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 
-            // --- CONFIGURACI�N DE SERVICIOS ---
+                    // 2. Case Insensitive para evitar problemas con mayúsculas/minúsculas
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                });
 
-            builder.Services.AddControllers();
+            // --- CONFIGURACIÓN DE SERVICIOS ---
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Configuraci�n de Base de Datos
+            // Configuración de Base de Datos
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // AutoMapper
             builder.Services.AddAutoMapper(typeof(Back.Mappings.MappingProfile));
 
-            // FluentValidation
+            // --- FLUENT VALIDATION (AQUÍ ESTÁ EL CAMBIO) ---
             builder.Services.AddFluentValidationAutoValidation();
-            builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
+            // Al referenciar RegisterUserValidator, escanea todo el proyecto y registra TODOS los validadores que encuentre
+            builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
 
             // --- CAPA DE REPOSITORIOS ---
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -62,8 +61,8 @@ namespace Back
             builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
 
             // Repositorios Base
-            builder.Services.AddScoped<IClientRepository, ClientRepository>(); // Asegurado con interfaz
-            builder.Services.AddScoped<IProductRepository, ProductRepository>(); // Asegurado con interfaz
+            builder.Services.AddScoped<IClientRepository, ClientRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ILocalityRepository, LocalityRepository>();
 
             // --- CAPA DE SERVICIOS ---
@@ -79,7 +78,7 @@ namespace Back
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
             builder.Services.AddScoped<ITrackingService, TrackingService>();
 
-            // --- CONFIGURACI�N DE SEGURIDAD JWT ---
+            // --- CONFIGURACIÓN DE SEGURIDAD JWT ---
             var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value ?? "Clave_Super_Secreta_Farmacia_2024");
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
@@ -94,7 +93,7 @@ namespace Back
 
             var app = builder.Build();
 
-            // --- INICIALIZACI�N DE DATOS (SEEDING) ---
+            // --- INICIALIZACIÓN DE DATOS (SEEDING) ---
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -102,8 +101,9 @@ namespace Back
                 {
                     var context = services.GetRequiredService<AppDbContext>();
 
-                    // ESTO BORRAR� TODA LA BASE DE DATOS Y LA CREAR� DE CERO
-                    // �salo solo en desarrollo para limpiar las llaves for�neas rebeldes
+                    // ESTO BORRARÁ TODA LA BASE DE DATOS Y LA CREARÁ DE CERO
+                    // Úsalo solo en desarrollo para limpiar las llaves foráneas rebeldes
+                    // Comenta estas líneas si quieres persistir los datos
                     context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
 
@@ -112,7 +112,7 @@ namespace Back
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Ocurri� un error al sembrar la base de datos.");
+                    logger.LogError(ex, "Ocurrió un error al sembrar la base de datos.");
                 }
             }
 
@@ -124,7 +124,7 @@ namespace Back
                 app.UseSwaggerUI();
             }
 
-            // Habilitar CORS si es necesario para el Frontend
+            // Habilitar CORS
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
@@ -140,6 +140,5 @@ namespace Back
 
             app.Run();
         }
-        
     }
 }
