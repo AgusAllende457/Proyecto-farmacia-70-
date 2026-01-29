@@ -2,7 +2,7 @@ using AutoMapper;
 using Back.Data;
 using Back.Repositories;
 using Back.Repositories.Interfaces;
-using Back.Validators; // Asegúrate de que este using esté presente
+using Back.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
+// Este using venía de la rama 'Pedidos' y es necesario para la seguridad en Swagger
+using Microsoft.OpenApi.Models;
 
 namespace Back
 {
@@ -21,42 +23,66 @@ namespace Back
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Configuración de Controladores y JSON
+            // 1. Configuración de Controladores y JSON
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
-                    // 1. Mantenemos camelCase para el Front
+                    // Mantenemos camelCase para el Front
                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-
-                    // 2. Case Insensitive para evitar problemas con mayúsculas/minúsculas
+                    // Case Insensitive para evitar problemas
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
-            // --- CONFIGURACIÓN DE SERVICIOS ---
-
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
 
-            // Configuración de Base de Datos
+            // 2. Configuración de Swagger con Seguridad JWT
+            // (Esta parte viene de la rama 'Pedidos', es mejor porque permite probar el Login)
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Farmacia", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header usando el esquema Bearer. Ejemplo: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
+
+            // 3. Configuración de Base de Datos
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // AutoMapper
+            // 4. AutoMapper
             builder.Services.AddAutoMapper(typeof(Back.Mappings.MappingProfile));
 
-            // --- FLUENT VALIDATION (AQUÍ ESTÁ EL CAMBIO) ---
+            // --- FLUENT VALIDATION ---
             builder.Services.AddFluentValidationAutoValidation();
-            // Al referenciar RegisterUserValidator, escanea todo el proyecto y registra TODOS los validadores que encuentre
             builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
 
-            // --- CAPA DE REPOSITORIOS ---
+            // 5. Inyección de Dependencias (Repositorios)
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
-
-            // Repositorios de Florencia (RF2, RF6)
             builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
             builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
 
@@ -65,7 +91,7 @@ namespace Back
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ILocalityRepository, LocalityRepository>();
 
-            // --- CAPA DE SERVICIOS ---
+            // 6. Inyección de Dependencias (Servicios)
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -73,12 +99,14 @@ namespace Back
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ILocalidadService, LocalidadService>();
             builder.Services.AddScoped<IPedidoService, PedidoService>();
-
-            // Servicios de Florencia (Pedidos y Flujo Operativo)
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
             builder.Services.AddScoped<ITrackingService, TrackingService>();
+            
+            // AGREGADO IMPORTANTÍSIMO:
+            // Este servicio es necesario para que funcione tu lógica de usuarios (UserManagement)
+            builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 
-            // --- CONFIGURACIÓN DE SEGURIDAD JWT ---
+            // 7. Configuración de Seguridad JWT
             var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value ?? "Clave_Super_Secreta_Farmacia_2024");
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
@@ -93,7 +121,7 @@ namespace Back
 
             var app = builder.Build();
 
-            // --- INICIALIZACIÓN DE DATOS (SEEDING) ---
+            // 8. Inicialización de Datos (Seeding)
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -101,9 +129,8 @@ namespace Back
                 {
                     var context = services.GetRequiredService<AppDbContext>();
 
-                    // ESTO BORRARÁ TODA LA BASE DE DATOS Y LA CREARÁ DE CERO
-                    // Úsalo solo en desarrollo para limpiar las llaves foráneas rebeldes
-                    // Comenta estas líneas si quieres persistir los datos
+                    // ATENCIÓN: Esto borra y recrea la BD.
+                    // Comenta estas dos líneas si quieres conservar los datos.
                     context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
 
@@ -116,8 +143,7 @@ namespace Back
                 }
             }
 
-            // --- PIPELINE DE SOLICITUDES HTTP ---
-
+            // 9. Pipeline de Solicitudes HTTP
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -132,7 +158,6 @@ namespace Back
 
             app.UseHttpsRedirection();
 
-            // IMPORTANTE: Authentication debe ir SIEMPRE antes de Authorization
             app.UseAuthentication();
             app.UseAuthorization();
 
