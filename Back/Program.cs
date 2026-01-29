@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
 using Microsoft.OpenApi.Models;
+using Back.Interfaces; // Asegúrate de tener este using para tus interfaces de Repositorio
 
 namespace Back
 {
@@ -26,16 +27,13 @@ namespace Back
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
-                    // Mantenemos camelCase para el Front
                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                    // Case Insensitive para evitar problemas
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
             builder.Services.AddEndpointsApiExplorer();
 
             // 2. Configuración de Swagger con Seguridad JWT
-            // (Mantenemos la versión de main porque incluye la seguridad necesaria)
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Farmacia", Version = "v1" });
@@ -88,19 +86,27 @@ namespace Back
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ILocalityRepository, LocalityRepository>();
 
+            // --- NUEVOS REPOSITORIOS (Meda F.) ---
+            builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
+            builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+            builder.Services.AddScoped<ICancellationRepository, CancellationRepository>();
+
             // 6. Inyección de Dependencias (Servicios)
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IUserService, UserService>(); 
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ILocalidadService, LocalidadService>();
             builder.Services.AddScoped<IPedidoService, PedidoService>();
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
             builder.Services.AddScoped<ITrackingService, TrackingService>();
-            
-            // AGREGADO: Tu servicio de gestión de usuarios (Una sola vez)
             builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+
+            // --- NUEVOS SERVICIOS (Meda F.) ---
+            builder.Services.AddScoped<IHistoryService, HistoryService>();
+            builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+            builder.Services.AddScoped<ICancellationService, CancellationService>();
 
             // 7. Configuración de Seguridad JWT
             var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value ?? "Clave_Super_Secreta_Farmacia_2024");
@@ -126,9 +132,8 @@ namespace Back
                     var context = services.GetRequiredService<AppDbContext>();
 
                     // ATENCIÓN: Esto borra y recrea la BD.
-                    // Comenta estas dos líneas si quieres conservar los datos.
-                    context.Database.EnsureDeleted();
-                    context.Database.EnsureCreated();
+                    // context.Database.EnsureDeleted();
+                    // context.Database.EnsureCreated();
 
                     DbInitializer.Initialize(context);
                 }
