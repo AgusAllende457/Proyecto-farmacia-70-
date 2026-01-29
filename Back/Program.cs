@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
-// Este using venía de la rama 'Pedidos' y es necesario para la seguridad en Swagger
 using Microsoft.OpenApi.Models;
 
 namespace Back
@@ -36,7 +35,7 @@ namespace Back
             builder.Services.AddEndpointsApiExplorer();
 
             // 2. Configuración de Swagger con Seguridad JWT
-            // (Esta parte viene de la rama 'Pedidos', es mejor porque permite probar el Login)
+            // (Mantenemos la versión de main porque incluye la seguridad necesaria)
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Farmacia", Version = "v1" });
@@ -85,8 +84,6 @@ namespace Back
             builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
             builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
             builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
-
-            // Repositorios Base
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ILocalityRepository, LocalityRepository>();
@@ -96,14 +93,13 @@ namespace Back
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserService, UserService>(); 
             builder.Services.AddScoped<ILocalidadService, LocalidadService>();
             builder.Services.AddScoped<IPedidoService, PedidoService>();
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
             builder.Services.AddScoped<ITrackingService, TrackingService>();
             
-            // AGREGADO IMPORTANTÍSIMO:
-            // Este servicio es necesario para que funcione tu lógica de usuarios (UserManagement)
+            // AGREGADO: Tu servicio de gestión de usuarios (Una sola vez)
             builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 
             // 7. Configuración de Seguridad JWT
@@ -150,7 +146,6 @@ namespace Back
                 app.UseSwaggerUI();
             }
 
-            // Habilitar CORS
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
