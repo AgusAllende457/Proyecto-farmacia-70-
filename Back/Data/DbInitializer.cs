@@ -11,6 +11,20 @@ namespace Back.Data
     {
         public static void Initialize(AppDbContext context)
         {
+            // Crea la base de datos si no existe
+            context.Database.EnsureCreated();
+
+            // 1. MOTIVOS DE CANCELACIÓN (Nuevos requerimientos)
+            if (!context.MotivosCancelacion.Any())
+            {
+                context.MotivosCancelacion.AddRange(
+                    new MotivoCancelacion { Nombre = "Arrepentimiento" },
+                    new MotivoCancelacion { Nombre = "Falta de stock" },
+                    new MotivoCancelacion { Nombre = "Error en el pago" },
+                    new MotivoCancelacion { Nombre = "Dirección incorrecta" }
+                );
+                context.SaveChanges();
+            }
             context.Database.EnsureCreated();
 
             // 1. ESTADOS

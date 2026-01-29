@@ -46,7 +46,7 @@ namespace Back.Services
         {
             var pedido = await _orderRepository.GetByIdAsync(dto.PedidoId);
 
-            // Cambié la validación: El pedido debe estar en 4 (Listo para despachar) 
+            // El pedido debe estar en 4 (Listo para despachar) 
             // para que un cadete sea asignado y pase a 6 (En camino)
             if (pedido == null || pedido.IDEstadoDePedido != 4) return false;
 
@@ -72,7 +72,6 @@ namespace Back.Services
             if (pedido == null) return false;
 
             // REGLA CLAVE: El cadete solo puede finalizar si el pedido está "En camino" (6)
-            // Si querés que funcione SIEMPRE para tu defensa, podés comentar la línea de abajo.
             if (pedido.IDEstadoDePedido != 6) return false;
 
             // Actualizamos datos de entrega real si el estado es Entregado (7)
@@ -98,5 +97,61 @@ namespace Back.Services
 
             return await _repository.ActualizarEstadoAsync(nuevoHistorial);
         }
+
+        // 4. CANCELAR PEDIDO (ADMIN/OPERARIO) - Pasa a Cancelado (10)
+        
+        public async Task<bool> CancelarPedidoAsync(CancelarPedidoDTO dto, int userId)
+        {
+            var pedido = await _orderRepository.GetByIdAsync(dto.PedidoId);
+
+            // No se puede cancelar si ya está entregado (7) o ya cancelado (10)
+            if (pedido == null || pedido.IDEstadoDePedido == 7 || pedido.IDEstadoDePedido == 10)
+                return false;
+
+            pedido.IDEstadoDePedido = 10; // Estado Cancelado
+
+            var historial = new HistorialDeEstados
+            {
+                IDPedido = pedido.IDPedido,
+                IDEstadoDePedido = 10,
+                IDUsuario = userId, // El ID del Admin/Operario que cancela
+                fecha_hora_inicio = DateTime.Now,
+                // Registramos el ID del motivo y la justificación en las observaciones
+                Observaciones = $"Cancelación (Motivo ID: {dto.MotivoCancelacionId}). Justificación: {dto.Justificacion ?? "Sin justificación adicional."}"
+            };
+
+            return await _repository.ActualizarEstadoAsync(historial);
+        }
+
+        public async Task<bool> CancelarPedidoAsync(CancelarPedidoDTO dto)
+        {
+            // 1. Obtener el pedido
+            var pedido = await _orderRepository.GetByIdAsync(dto.PedidoId);
+
+            // 2. Validaciones: No cancelar si no existe, si ya se entregó (7) o ya se canceló (10)
+            if (pedido == null || pedido.IDEstadoDePedido == 7 || pedido.IDEstadoDePedido == 10)
+                return false;
+
+            // 3. Actualizar el modelo Pedido con los datos del DTO
+            pedido.IDEstadoDePedido = 10;
+            pedido.MotivoCancelacionId = dto.MotivoCancelacionId;
+            pedido.JustificacionCancelacion = dto.Justificacion;
+
+            // 4. Crear el historial
+            // Nota: Como la firma no recibe userId, usamos el IDUsuario actual del pedido 
+            // o podrías agregar 'UsuarioId' al CancelarPedidoDTO para mayor precisión.
+            var historial = new HistorialDeEstados
+            {
+                IDPedido = pedido.IDPedido,
+                IDEstadoDePedido = 10,
+                IDUsuario = pedido.IDUsuario, // Usuario responsable registrado
+                fecha_hora_inicio = DateTime.Now,
+                Observaciones = $"Cancelación. Motivo ID: {dto.MotivoCancelacionId}. Justificación: {dto.Justificacion ?? "Sin detalle."}"
+            };
+
+            // 5. Persistir cambios mediante el repositorio
+            return await _repository.ActualizarEstadoAsync(historial); ;
+        }
     }
+
 }
