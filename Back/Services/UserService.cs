@@ -3,7 +3,7 @@ using Back.DTOs;
 using Back.DTOS;
 using Back.Models;
 using Back.Repositories;
-using BCrypt.Net; // Necesario para el HashPassword
+using BCrypt.Net;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace Back.Services
         }
 
         // ==========================================
-        // TUS MÉTODOS DE LECTURA (Ya existían)
+        // MÉTODOS DE LECTURA
         // ==========================================
 
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
@@ -38,13 +38,12 @@ namespace Back.Services
         }
 
         // ==========================================
-        // MÉTODOS NUEVOS (Lógica de Negocio y Seguridad)
+        // MÉTODOS DE LÓGICA Y SEGURIDAD
         // ==========================================
 
         public async Task<UserDTO> RegisterUserAsync(RegisterDTO registerDto)
         {
-            // 1. Validaciones de Negocio (RF8)
-            // Verificamos que no se repita el usuario ni el mail
+            // 1. Validaciones
             if (await _userRepository.UserExistsAsync(registerDto.UsuarioNombre))
             {
                 throw new Exception("El nombre de usuario ya está en uso.");
@@ -55,14 +54,13 @@ namespace Back.Services
                 throw new Exception("El correo electrónico ya está registrado.");
             }
 
-            // 2. Mapeo de DTO a Entidad
+            // 2. Mapeo
             var usuarioEntity = _mapper.Map<Usuario>(registerDto);
 
-            // 3. SEGURIDAD: Hasheo de contraseña
-            // Nunca guardamos texto plano. BCrypt maneja el 'Salt' automáticamente.
+            // 3. Hasheo Password
             usuarioEntity.Contraseña = BCrypt.Net.BCrypt.HashPassword(registerDto.Contraseña);
 
-            // 4. Guardar en Base de Datos
+            // 4. Guardar
             var resultado = await _userRepository.CreateAsync(usuarioEntity);
 
             if (!resultado)
@@ -70,28 +68,23 @@ namespace Back.Services
                 throw new Exception("Error al guardar el usuario en la base de datos.");
             }
 
-            // 5. Devolver el DTO (sin la contraseña)
             return _mapper.Map<UserDTO>(usuarioEntity);
         }
 
         public async Task<bool> UpdateUserAsync(int id, UpdateUserDTO updateDto)
         {
-            // 1. Verificar que el usuario exista
             var usuarioExistente = await _userRepository.GetByIdAsync(id);
             if (usuarioExistente == null) return false;
 
-            // 2. Actualizar campos
-            // Usamos AutoMapper para pasar los datos del DTO a la entidad existente.
-            // Como UpdateUserDTO NO tiene el campo 'Contraseña', la contraseña actual NO se toca.
+            // Actualiza campos excepto contraseña
             _mapper.Map(updateDto, usuarioExistente);
 
-            // 3. Guardar cambios
             return await _userRepository.UpdateAsync(usuarioExistente);
         }
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            // La lógica de verificación ya suele estar en el repositorio o se maneja con el retorno bool
+            // Asume que tu IUserRepository tiene implementado DeleteAsync
             return await _userRepository.DeleteAsync(id);
         }
     }

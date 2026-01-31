@@ -40,7 +40,6 @@ namespace Back.Controllers
         }
 
         // 2. GET: Listar TODOS los usuarios
-        // (Este es el que rescatamos del controlador viejo)
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -49,7 +48,7 @@ namespace Back.Controllers
         }
 
         // ==========================================
-        // MÉTODOS POST/PUT (Escritura)
+        // MÉTODOS POST/PUT/DELETE (Escritura)
         // ==========================================
 
         // 3. POST: Crear usuario
@@ -59,13 +58,11 @@ namespace Back.Controllers
             try
             {
                 var createdUser = await _userService.RegisterUserAsync(registerDto);
-                // Usamos .Id según tu UserDTO
                 return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creando usuario");
-                // Mostramos el error interno si existe (útil para ver problemas de SQL/Foreign Keys)
                 var innerMessage = ex.InnerException != null ? ex.InnerException.Message : "";
                 return BadRequest($"Error: {ex.Message} || Detalle: {innerMessage}");
             }
@@ -107,6 +104,32 @@ namespace Back.Controllers
             catch (Exception ex)
             {
                 return BadRequest($"Error cambiando rol: {ex.Message}");
+            }
+        }
+
+        // 6. DELETE: Eliminar usuario (NUEVO)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                var result = await _userService.DeleteUserAsync(id);
+
+                if (!result) return NotFound($"Usuario con ID {id} no encontrado.");
+
+                return Ok(new { message = "Usuario eliminado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                // Capturamos errores de Clave Foránea (si el usuario tiene pedidos, reportes, etc.)
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : "";
+
+                if (innerMessage.Contains("FK_") || innerMessage.Contains("REFERENCE"))
+                {
+                    return BadRequest("No se puede eliminar el usuario porque tiene registros asociados (pedidos, reportes).");
+                }
+
+                return BadRequest($"Error al eliminar usuario: {ex.Message}");
             }
         }
     }
